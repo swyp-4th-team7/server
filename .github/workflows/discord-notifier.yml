@@ -1,0 +1,45 @@
+name: Discord Notifier
+
+on:
+  pull_request:
+    types: [opened]
+  issues:
+    types: [opened]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Upper Case ID
+        run: |
+          ACTOR_NAME=$(echo "${{ github.actor }}" | tr '[:lower:]' '[:upper:]')
+          echo "ACTOR_UPPER=$ACTOR_NAME" >> $GITHUB_ENV
+
+      - name: Discord notification (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: |
+            # 🚀 PR 생성: ${{ github.event.pull_request.title }}
+            담당자: ${{ github.actor }}
+          title: "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+          description: |
+            **작성자:** ${{ github.actor }}
+            **브랜치:** ${{ github.head_ref }} -> ${{ github.base_ref }}
+            **링크:** ${{ github.event.pull_request.html_url }}
+          color: 0x5865F2
+
+      - name: Discord notification (Issue)
+        if: ${{ github.event_name == 'issues' }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: |
+            # 📌 이슈 생성: ${{ github.event.issue.title }}
+            담당자: ${{ github.actor }}
+          title: "Issue #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
+          description: |
+            **작성자:** ${{ github.actor }}
+            **링크:** ${{ github.event.issue.html_url }}
+          color: 0x5865F2
