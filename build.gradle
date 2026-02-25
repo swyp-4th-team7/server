@@ -47,7 +47,6 @@ spotless {
 	java {
 		target("**/*.java")
 		googleJavaFormat("1.25.2").aosp()
-		importOrder("java", "javax", "org", "com")
 		removeUnusedImports()
 		trimTrailingWhitespace()
 		endWithNewline()
