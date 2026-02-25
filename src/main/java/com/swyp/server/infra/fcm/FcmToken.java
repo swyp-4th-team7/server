@@ -1,6 +1,7 @@
 package com.swyp.server.infra.fcm;
 
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.global.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "fcm_tokens")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FcmToken {
+public class FcmToken extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
