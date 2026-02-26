@@ -1,6 +1,7 @@
 package com.swyp.server.infra.fcm;
 
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.global.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "fcm_tokens")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FcmToken {
+public class FcmToken extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
