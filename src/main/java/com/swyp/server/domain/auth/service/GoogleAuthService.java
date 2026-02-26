@@ -70,7 +70,7 @@ public class GoogleAuthService {
                                                 .token(refreshToken)
                                                 .build()));
 
-        return new LoginResponse(accessToken, refreshToken, isNewUser);
+        return LoginResponse.of(accessToken, refreshToken, isNewUser);
     }
 
     @Transactional
@@ -95,7 +95,7 @@ public class GoogleAuthService {
 
         refreshTokenRepository.findByUserId(userId).ifPresent(t -> t.updateToken(newRefreshToken));
 
-        return new LoginResponse(newAccessToken, newRefreshToken, false);
+        return LoginResponse.of(newAccessToken, newRefreshToken, false);
     }
 
     private GoogleIdToken.Payload verifyGoogleToken(String idToken) {
@@ -113,7 +113,7 @@ public class GoogleAuthService {
         } catch (CustomException e) {
             throw e;
         } catch (Exception e) {
-            log.error("구글 토큰 검증 실패: {}", e.getMessage());
+            log.error("Google token verification failed: {}", e.getMessage());
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
