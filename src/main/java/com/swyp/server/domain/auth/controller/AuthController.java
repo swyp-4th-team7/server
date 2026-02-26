@@ -9,22 +9,30 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "인증 API")
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final GoogleAuthService googleAuthService;
 
     @Operation(summary = "구글 소셜 로그인")
-    @PostMapping("/google")
+    @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> googleLogin(
             @Valid @RequestBody GoogleLoginRequest request) {
         LoginResponse response = googleAuthService.googleLogin(request);
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @Operation(summary = "로그아웃")
+    @DeleteMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(@AuthenticationPrincipal Long userId) {
+        googleAuthService.logout(userId);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     @Operation(summary = "토큰 재발급")

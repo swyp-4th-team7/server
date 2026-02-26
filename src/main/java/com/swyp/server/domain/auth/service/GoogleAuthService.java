@@ -74,6 +74,11 @@ public class GoogleAuthService {
     }
 
     @Transactional
+    public void logout(Long userId) {
+        refreshTokenRepository.deleteByUserId(userId);
+    }
+
+    @Transactional
     public LoginResponse reissue(String refreshToken) {
         String token = refreshToken.replace("Bearer ", "");
 
