@@ -1,6 +1,6 @@
 package com.swyp.server.domain.user.entity;
 
-import com.swyp.server.global.BaseTimeEntity;
+import com.swyp.server.global.SoftDeletableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseTimeEntity {
+public class User extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
