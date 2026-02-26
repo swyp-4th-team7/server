@@ -75,23 +75,25 @@ public class GoogleAuthService {
 
     @Transactional
     public LoginResponse reissue(String refreshToken) {
-        // Bearer 제거
         String token = refreshToken.replace("Bearer ", "");
 
-        // DB에서 토큰 조회
-        RefreshToken savedToken =
-                refreshTokenRepository
-                        .findByToken(token)
-                        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
+        // 만료 포함 모든 검증을 직접 처리
+        Long userId;
+        try {
+            userId = jwtProvider.getUserIdFromToken(token);
+        } catch (CustomException e) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
 
-        // 토큰 유효성 검증
-        jwtProvider.validateToken(token);
+        // DB에서 토큰 일치 여부 확인
+        refreshTokenRepository
+                .findByToken(token)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
 
-        Long userId = jwtProvider.getUserIdFromToken(token);
         String newAccessToken = jwtProvider.generateAccessToken(userId);
         String newRefreshToken = jwtProvider.generateRefreshToken(userId);
 
-        savedToken.updateToken(newRefreshToken);
+        refreshTokenRepository.findByUserId(userId).ifPresent(t -> t.updateToken(newRefreshToken));
 
         return new LoginResponse(newAccessToken, newRefreshToken, false);
     }
