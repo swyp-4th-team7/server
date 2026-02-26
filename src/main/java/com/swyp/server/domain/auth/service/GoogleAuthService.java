@@ -1,11 +1,13 @@
-package com.swyp.server.domain.user.service;
+package com.swyp.server.domain.auth.service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import com.swyp.server.domain.user.dto.GoogleLoginRequest;
-import com.swyp.server.domain.user.dto.LoginResponse;
+import com.swyp.server.domain.auth.dto.GoogleLoginRequest;
+import com.swyp.server.domain.auth.dto.LoginResponse;
+import com.swyp.server.domain.auth.entity.RefreshToken;
+import com.swyp.server.domain.auth.repository.RefreshTokenRepository;
 import com.swyp.server.domain.user.entity.Role;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GoogleAuthService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProvider jwtProvider;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
@@ -56,7 +59,41 @@ public class GoogleAuthService {
         String accessToken = jwtProvider.generateAccessToken(user.getId());
         String refreshToken = jwtProvider.generateRefreshToken(user.getId());
 
+        refreshTokenRepository
+                .findByUserId(user.getId())
+                .ifPresentOrElse(
+                        existing -> existing.updateToken(refreshToken),
+                        () ->
+                                refreshTokenRepository.save(
+                                        RefreshToken.builder()
+                                                .userId(user.getId())
+                                                .token(refreshToken)
+                                                .build()));
+
         return new LoginResponse(accessToken, refreshToken, isNewUser);
+    }
+
+    @Transactional
+    public LoginResponse reissue(String refreshToken) {
+        // Bearer 제거
+        String token = refreshToken.replace("Bearer ", "");
+
+        // DB에서 토큰 조회
+        RefreshToken savedToken =
+                refreshTokenRepository
+                        .findByToken(token)
+                        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
+
+        // 토큰 유효성 검증
+        jwtProvider.validateToken(token);
+
+        Long userId = jwtProvider.getUserIdFromToken(token);
+        String newAccessToken = jwtProvider.generateAccessToken(userId);
+        String newRefreshToken = jwtProvider.generateRefreshToken(userId);
+
+        savedToken.updateToken(newRefreshToken);
+
+        return new LoginResponse(newAccessToken, newRefreshToken, false);
     }
 
     private GoogleIdToken.Payload verifyGoogleToken(String idToken) {

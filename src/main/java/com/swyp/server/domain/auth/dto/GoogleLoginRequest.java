@@ -1,4 +1,4 @@
-package com.swyp.server.domain.user.dto;
+package com.swyp.server.domain.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

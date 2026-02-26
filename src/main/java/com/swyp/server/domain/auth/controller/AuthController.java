@@ -1,18 +1,15 @@
-package com.swyp.server.domain.user.controller;
+package com.swyp.server.domain.auth.controller;
 
-import com.swyp.server.domain.user.dto.GoogleLoginRequest;
-import com.swyp.server.domain.user.dto.LoginResponse;
-import com.swyp.server.domain.user.service.GoogleAuthService;
+import com.swyp.server.domain.auth.dto.GoogleLoginRequest;
+import com.swyp.server.domain.auth.dto.LoginResponse;
+import com.swyp.server.domain.auth.service.GoogleAuthService;
 import com.swyp.server.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "인증 API")
 @RestController
@@ -27,6 +24,14 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> googleLogin(
             @Valid @RequestBody GoogleLoginRequest request) {
         LoginResponse response = googleAuthService.googleLogin(request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @Operation(summary = "토큰 재발급")
+    @PostMapping("/reissue")
+    public ResponseEntity<ApiResponse<LoginResponse>> reissue(
+            @RequestHeader("Authorization") String refreshToken) {
+        LoginResponse response = googleAuthService.reissue(refreshToken);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
