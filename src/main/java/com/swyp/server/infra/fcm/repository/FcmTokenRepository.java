@@ -1,5 +1,6 @@
-package com.swyp.server.infra.fcm;
+package com.swyp.server.infra.fcm.repository;
 
+import com.swyp.server.infra.fcm.entity.FcmToken;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -3,6 +3,7 @@ package com.swyp.server.infra.fcm;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.swyp.server.infra.fcm.config.FcmInitializer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

@@ -1,9 +1,12 @@
-package com.swyp.server.infra.fcm;
+package com.swyp.server.infra.fcm.service;
 
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
+import com.swyp.server.infra.fcm.entity.FcmToken;
+import com.swyp.server.infra.fcm.entity.Platform;
+import com.swyp.server.infra.fcm.repository.FcmTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

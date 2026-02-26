@@ -1,4 +1,4 @@
-package com.swyp.server.infra.fcm;
+package com.swyp.server.infra.fcm.config;
 
 import com.google.firebase.FirebaseApp;
 import org.springframework.context.annotation.Bean;

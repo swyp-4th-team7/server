@@ -1,4 +1,4 @@
-package com.swyp.server.infra.fcm;
+package com.swyp.server.infra.fcm.entity;
 
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.AuditableEntity;

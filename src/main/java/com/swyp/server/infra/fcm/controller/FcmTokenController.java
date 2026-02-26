@@ -1,6 +1,8 @@
-package com.swyp.server.infra.fcm;
+package com.swyp.server.infra.fcm.controller;
 
 import com.swyp.server.global.response.ApiResponse;
+import com.swyp.server.infra.fcm.dto.FcmTokenRegisterRequest;
+import com.swyp.server.infra.fcm.service.FcmTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -1,4 +1,4 @@
-package com.swyp.server.infra.fcm;
+package com.swyp.server.infra.fcm.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
