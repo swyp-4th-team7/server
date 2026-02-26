@@ -36,7 +36,7 @@ public class GoogleAuthService {
 
         String email = payload.getEmail();
         String name = (String) payload.get("name");
-        String pirtureUrl = (String) payload.get("pirture");
+        String pictureUrl = (String) payload.get("picture");
 
         boolean isNewUser = !userRepository.existsByEmail(email);
 
@@ -49,7 +49,7 @@ public class GoogleAuthService {
                                                 User.builder()
                                                         .email(email)
                                                         .nickname(name)
-                                                        .profileImageUrl(pirtureUrl)
+                                                        .profileImageUrl(pictureUrl)
                                                         .role(Role.USER)
                                                         .build()));
 
