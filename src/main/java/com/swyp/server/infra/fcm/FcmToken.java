@@ -45,4 +45,9 @@ public class FcmToken extends AuditableEntity {
         this.platform = platform;
         this.token = token;
     }
+
+    public void update(User user, Platform platform) {
+        this.user = user;
+        this.platform = platform;
+    }
 }
