@@ -1,7 +1,6 @@
 package com.swyp.server.domain.user.entity;
 
 import com.swyp.server.global.SoftDeletableEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

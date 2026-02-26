@@ -1,12 +1,10 @@
 package com.swyp.server.global;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.SQLRestriction;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
 import lombok.Getter;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @MappedSuperclass

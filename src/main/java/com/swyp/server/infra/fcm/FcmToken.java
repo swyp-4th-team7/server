@@ -2,7 +2,6 @@ package com.swyp.server.infra.fcm;
 
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.AuditableEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
