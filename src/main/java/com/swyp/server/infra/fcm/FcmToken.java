@@ -4,6 +4,8 @@ import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,12 +32,17 @@ public class FcmToken extends AuditableEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private Platform platform;
+
+    @Column(nullable = false, unique = true, length = 512)
     private String token;
 
     @Builder
-    public FcmToken(User user, String token) {
+    public FcmToken(User user, Platform platform, String token) {
         this.user = user;
+        this.platform = platform;
         this.token = token;
     }
 }
