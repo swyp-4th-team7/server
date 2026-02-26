@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class FirebaseConfig {
+public class FcmConfig {
 
     @Bean
-    public FirebaseApp firebaseApp(FirebaseAppInitializer initializer) {
+    public FirebaseApp firebaseApp(FcmInitializer initializer) {
         return initializer.initialize();
     }
 }

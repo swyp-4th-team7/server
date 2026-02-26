@@ -15,11 +15,11 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-class FirebaseAppInitializerTest {
+class FcmInitializerTest {
     @DisplayName("키 파일이 없으면 IllegalStateException을 던진다.")
     @Test
     void whenKeyFileMissing_throwIllegalStateException() {
-        FirebaseAppInitializer initializer = new FirebaseAppInitializer("/no/such/file/key.json");
+        FcmInitializer initializer = new FcmInitializer("/no/such/file/key.json");
 
         try (MockedStatic<FirebaseApp> firebaseAppMock = Mockito.mockStatic(FirebaseApp.class)) {
             firebaseAppMock.when(FirebaseApp::getApps).thenReturn(List.of());
@@ -31,7 +31,7 @@ class FirebaseAppInitializerTest {
     @DisplayName("이미 초기화되어 있으면 기존 FirebaseApp을 반환한다.")
     @Test
     void whenAlreadyInitialized_returnExistingFirebaseApp() {
-        FirebaseAppInitializer initializer = new FirebaseAppInitializer("unused");
+        FcmInitializer initializer = new FcmInitializer("unused");
 
         FirebaseApp existingApp = Mockito.mock(FirebaseApp.class);
 
@@ -54,7 +54,7 @@ class FirebaseAppInitializerTest {
         Path keyJson = tempDir.resolve("key.json");
         Files.writeString(keyJson, "{}");
 
-        FirebaseAppInitializer initializer = new FirebaseAppInitializer(keyJson.toString());
+        FcmInitializer initializer = new FcmInitializer(keyJson.toString());
 
         FirebaseApp expectedApp = Mockito.mock(FirebaseApp.class);
         GoogleCredentials credentials = Mockito.mock(GoogleCredentials.class);

@@ -12,11 +12,10 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class FirebaseAppInitializer {
+public class FcmInitializer {
     private final String serviceAccountPath;
 
-    public FirebaseAppInitializer(
-            @Value("${firebase.service-account.path}") String serviceAccountPath) {
+    public FcmInitializer(@Value("${firebase.service-account.path}") String serviceAccountPath) {
         this.serviceAccountPath = serviceAccountPath;
     }
 
