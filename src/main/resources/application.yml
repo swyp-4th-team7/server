@@ -49,3 +49,7 @@ springdoc:
     operations-sorter: alpha
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
+
+firebase:
+  service-account:
+    path: ${FIREBASE_SERVICE_ACCOUNT_PATH}
