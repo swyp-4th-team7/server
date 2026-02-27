@@ -74,7 +74,7 @@ public class GoogleAuthService {
                                                 .token(refreshToken)
                                                 .build()));
 
-        return LoginResponse.of(accessToken, refreshToken, isNewUser);
+        return new LoginResponse(accessToken, refreshToken, isNewUser);
     }
 
     @Transactional
@@ -104,7 +104,7 @@ public class GoogleAuthService {
 
         refreshTokenRepository.findByUserId(userId).ifPresent(t -> t.updateToken(newRefreshToken));
 
-        return LoginResponse.of(newAccessToken, newRefreshToken, false);
+        return new LoginResponse(newAccessToken, newRefreshToken, false);
     }
 
     private GoogleIdToken.Payload verifyGoogleToken(String idToken) {
