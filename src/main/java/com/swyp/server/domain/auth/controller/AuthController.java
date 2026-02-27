@@ -20,6 +20,7 @@ public class AuthController {
 
     private final GoogleAuthService googleAuthService;
 
+    @Operation(summary = "소셜 로그인")
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> googleLogin(
             @Valid @RequestBody SocialLoginRequest request) {
