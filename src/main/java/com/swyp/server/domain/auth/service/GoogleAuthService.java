@@ -8,9 +8,8 @@ import com.swyp.server.domain.auth.dto.LoginResponse;
 import com.swyp.server.domain.auth.dto.SocialLoginRequest;
 import com.swyp.server.domain.auth.entity.RefreshToken;
 import com.swyp.server.domain.auth.repository.RefreshTokenRepository;
-import com.swyp.server.domain.user.entity.Role;
 import com.swyp.server.domain.user.entity.User;
-import com.swyp.server.domain.user.repository.UserRepository;
+import com.swyp.server.domain.user.service.UserService;
 import com.swyp.server.global.config.JwtProvider;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
@@ -26,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GoogleAuthService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProvider jwtProvider;
 
@@ -45,20 +44,8 @@ public class GoogleAuthService {
         String name = (String) payload.get("name");
         String pictureUrl = (String) payload.get("picture");
 
-        boolean isNewUser = !userRepository.existsByEmail(email);
-
-        User user =
-                userRepository
-                        .findByEmail(email)
-                        .orElseGet(
-                                () ->
-                                        userRepository.save(
-                                                User.builder()
-                                                        .email(email)
-                                                        .nickname(name)
-                                                        .profileImageUrl(pictureUrl)
-                                                        .role(Role.USER)
-                                                        .build()));
+        boolean isNewUser = !userService.existsByEmail(email);
+        User user = userService.findOrCreateUser(email, name, pictureUrl);
 
         String accessToken = jwtProvider.generateAccessToken(user.getId());
         String refreshToken = jwtProvider.generateRefreshToken(user.getId());
