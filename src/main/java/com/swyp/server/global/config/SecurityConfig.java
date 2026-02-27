@@ -18,7 +18,7 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
 
     private static final String[] PUBLIC_URLS = {
-        "/api/auth/**", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html"
+        "/api/v1/auth/**", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html"
     };
 
     @Bean
