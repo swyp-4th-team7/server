@@ -4,8 +4,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import com.swyp.server.domain.auth.dto.GoogleLoginRequest;
 import com.swyp.server.domain.auth.dto.LoginResponse;
+import com.swyp.server.domain.auth.dto.SocialLoginRequest;
 import com.swyp.server.domain.auth.entity.RefreshToken;
 import com.swyp.server.domain.auth.repository.RefreshTokenRepository;
 import com.swyp.server.domain.user.entity.Role;
@@ -34,8 +34,12 @@ public class GoogleAuthService {
     private String googleClientId;
 
     @Transactional
-    public LoginResponse googleLogin(GoogleLoginRequest request) {
-        GoogleIdToken.Payload payload = verifyGoogleToken(request.idToken());
+    public LoginResponse login(SocialLoginRequest request) {
+        if (!"GOOGLE".equals(request.socialType())) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+        }
+
+        GoogleIdToken.Payload payload = verifyGoogleToken(request.token());
 
         String email = payload.getEmail();
         String name = (String) payload.get("name");
