@@ -106,8 +106,8 @@ public class NotificationService {
                 response.getSuccessCount(),
                 response.getFailureCount());
 
-        for (TopicManagementResponse.Error err : response.getErrors()) {
-            int idx = err.getIndex();
+        for (TopicManagementResponse.Error error : response.getErrors()) {
+            int idx = error.getIndex();
             if (idx < 0 || idx >= tokens.size()) {
                 continue;
             }
@@ -119,7 +119,7 @@ public class NotificationService {
                     "Deleted failed token operation={}, topic={}, reason={}, token={}",
                     operation,
                     topic,
-                    err.getReason(),
+                    error.getReason(),
                     maskToken(failedToken));
         }
     }
