@@ -7,12 +7,11 @@ import com.swyp.server.global.exception.ErrorCode;
 import com.swyp.server.infra.fcm.entity.FcmToken;
 import com.swyp.server.infra.fcm.entity.Platform;
 import com.swyp.server.infra.fcm.repository.FcmTokenRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FcmTokenService {
@@ -41,8 +40,18 @@ public class FcmTokenService {
                                                 .build()));
     }
 
+    @Transactional(readOnly = true)
+    public List<String> findTokenStringsByUserId(Long userId) {
+        return fcmTokenRepository.findAllByUserId(userId).stream().map(FcmToken::getToken).toList();
+    }
+
     @Transactional
     public void delete(Long userId, String token) {
         fcmTokenRepository.deleteByUserIdAndToken(userId, token);
+    }
+
+    @Transactional
+    public void deleteByToken(String token) {
+        fcmTokenRepository.deleteByToken(token);
     }
 }
