@@ -3,8 +3,6 @@ spring:
     import: optional:file:.env[.properties]
   application:
     name: server
-  jackson:
-    default-property-inclusion: non_null
 
   datasource:
     url: ${DB_URL}
