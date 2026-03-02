@@ -38,7 +38,7 @@ public class NotificationService {
             return;
         }
 
-        cleanUpFcmTokens(tokens, response, "subscribe", topic);
+        logFailedFcmTokens(tokens, response, "subscribe", topic);
     }
 
     public void unsubscribeTopic(Long userId, String topic) {
@@ -56,12 +56,14 @@ public class NotificationService {
             return;
         }
 
-        cleanUpFcmTokens(tokens, response, "unsubscribe", topic);
+        logFailedFcmTokens(tokens, response, "unsubscribe", topic);
     }
 
     public void sendToUsers(
             List<Long> userIds, String title, String body, Map<String, String> data) {
-        if (userIds == null || userIds.isEmpty()) return;
+        if (userIds == null || userIds.isEmpty()) {
+            return;
+        }
 
         userIds.stream()
                 .filter(Objects::nonNull)
@@ -92,10 +94,15 @@ public class NotificationService {
         }
     }
 
-    // topic subscribe/unsubscribe 실패 토큰 삭제
-    private void cleanUpFcmTokens(
+    // topic subscribe/unsubscribe 실패 토큰 로깅
+    private void logFailedFcmTokens(
             List<String> tokens, TopicManagementResponse response, String operation, String topic) {
         if (response == null || response.getFailureCount() <= 0) {
+            return;
+        }
+
+        List<TopicManagementResponse.Error> errors = response.getErrors();
+        if (errors == null || errors.isEmpty()) {
             return;
         }
 
@@ -106,17 +113,25 @@ public class NotificationService {
                 response.getSuccessCount(),
                 response.getFailureCount());
 
-        for (TopicManagementResponse.Error error : response.getErrors()) {
+        for (TopicManagementResponse.Error error : errors) {
+            if (error == null) {
+                continue;
+            }
             int idx = error.getIndex();
             if (idx < 0 || idx >= tokens.size()) {
+                log.warn(
+                        "FCM topic {} error index out of range topic={}, index={}, reason={}",
+                        operation,
+                        topic,
+                        idx,
+                        error.getReason());
                 continue;
             }
 
             String failedToken = tokens.get(idx);
-            fcmTokenService.deleteByToken(failedToken);
 
-            log.info(
-                    "Deleted failed token operation={}, topic={}, reason={}, token={}",
+            log.warn(
+                    "FCM topic {} failed topic={}, reason={}, token={}",
                     operation,
                     topic,
                     error.getReason(),

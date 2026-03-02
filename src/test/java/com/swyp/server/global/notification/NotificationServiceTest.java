@@ -122,9 +122,9 @@ class NotificationServiceTest {
         verify(fcmTokenService, never()).deleteByToken(anyString());
     }
 
-    @DisplayName("토픽 구독 결과가 부분 실패면 실패 토큰을 삭제한다.")
+    @DisplayName("토픽 구독 결과가 부분 실패여도 실패 토큰을 삭제하지 않는다.")
     @Test
-    void whenSubscribeFails_deleteFailedToken() {
+    void whenSubscribeFails_doNotDeleteFailedToken() {
         Long userId = 1L;
         String topic = "test-topic";
         List<String> tokens = List.of("test-token-1", "test-token-2", "test-token-3");
@@ -132,8 +132,8 @@ class NotificationServiceTest {
         when(fcmTokenService.findTokenStringsByUserId(userId)).thenReturn(tokens);
 
         TopicManagementResponse response = mock(TopicManagementResponse.class);
-        when(response.getSuccessCount()).thenReturn(1);
-        when(response.getFailureCount()).thenReturn(2);
+        when(response.getSuccessCount()).thenReturn(2);
+        when(response.getFailureCount()).thenReturn(1);
 
         TopicManagementResponse.Error error = mock(TopicManagementResponse.Error.class);
         when(error.getIndex()).thenReturn(0);
@@ -144,9 +144,7 @@ class NotificationServiceTest {
 
         notificationService.subscribeTopic(userId, topic);
 
-        verify(fcmTokenService).deleteByToken("test-token-1");
-        verify(fcmTokenService, never()).deleteByToken("test-token-2");
-        verify(fcmTokenService, never()).deleteByToken("test-token-3");
+        verify(fcmTokenService, never()).deleteByToken(anyString());
     }
 
     @DisplayName("토픽 구독 중 예외가 발생하면 토큰을 삭제하지 않는다.")
