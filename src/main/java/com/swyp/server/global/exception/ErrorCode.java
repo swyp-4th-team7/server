@@ -23,8 +23,8 @@ public enum ErrorCode {
 
     // FCM
     FCM_SEND_FAILED(50001, "푸시 알림 전송에 실패했습니다."),
-    FCM_TOPIC_SUBSCRIBE_FAILED(50001, "푸시 토픽 구독에 실패했습니다."),
-    FCM_TOPIC_UNSUBSCRIBE_FAILED(50002, "푸시 알림 구독 해제에 실패했습니다.");
+    FCM_TOPIC_SUBSCRIBE_FAILED(50002, "푸시 토픽 구독에 실패했습니다."),
+    FCM_TOPIC_UNSUBSCRIBE_FAILED(50003, "푸시 알림 구독 해제에 실패했습니다.");
 
     private final int code;
     private final String message;
