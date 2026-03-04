@@ -26,7 +26,8 @@ public class SecurityConfig {
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth ->
-                                auth.requestMatchers(SecurityPath.PUBLIC_URLS)
+                                auth.requestMatchers(
+                                                SecurityPath.PUBLIC_URLS.toArray(String[]::new))
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
