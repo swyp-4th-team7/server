@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 
 @Configuration
@@ -32,7 +33,7 @@ public class SecurityConfig {
                                         .anyRequest()
                                         .authenticated())
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtProvider), AuthenticationFilter.class)
+                        new JwtAuthenticationFilter(jwtProvider), AuthorizationFilter.class)
                 .exceptionHandling(
                         ex ->
                                 ex.authenticationEntryPoint(securityExceptionHandler)
