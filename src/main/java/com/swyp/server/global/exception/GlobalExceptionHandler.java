@@ -8,10 +8,10 @@ import com.swyp.server.global.response.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,27 +33,34 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleValidationException(
             MethodArgumentNotValidException e) {
         // 우선순위 높은 에러 하나만 반환
-        String message =
-                e.getBindingResult().getFieldErrors().stream()
-                        .findFirst()
-                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                        .orElse(INVALID_INPUT_VALUE.getMessage());
-        return ResponseEntity.status(INVALID_INPUT_VALUE.getStatus())
-                .body(ApiResponse.fail(INVALID_INPUT_VALUE.getCode(), message));
+        FieldError fieldError =
+                e.getBindingResult().getFieldErrors().stream().findFirst().orElse(null);
+
+        ErrorCode errorCode = INVALID_INPUT_VALUE;
+
+        if (fieldError != null) {
+            errorCode = ErrorCode.fromValidationKey(fieldError.getDefaultMessage());
+        }
+
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ApiResponse.fail(errorCode.getCode(), errorCode.getMessage()));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiResponse<Void>> handleConstraintViolationException(
             ConstraintViolationException e) {
         // 우선순위 높은 에러 하나만 반환
-        String message =
-                e.getConstraintViolations().stream()
-                        .findFirst()
-                        .map(ConstraintViolation::getMessage)
-                        .orElse(INVALID_INPUT_VALUE.getMessage());
+        ConstraintViolation<?> constraintViolation =
+                e.getConstraintViolations().stream().findFirst().orElse(null);
 
-        return ResponseEntity.status(INVALID_INPUT_VALUE.getStatus())
-                .body(ApiResponse.fail(INVALID_INPUT_VALUE.getCode(), message));
+        ErrorCode errorCode = INVALID_INPUT_VALUE;
+
+        if (constraintViolation != null) {
+            errorCode = ErrorCode.fromValidationKey(constraintViolation.getMessage());
+        }
+
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ApiResponse.fail(errorCode.getCode(), errorCode.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

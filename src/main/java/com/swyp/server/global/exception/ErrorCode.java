@@ -25,9 +25,29 @@ public enum ErrorCode {
     // FCM
     FCM_SEND_FAILED(50001, 500, "푸시 알림 전송에 실패했습니다."),
     FCM_TOPIC_SUBSCRIBE_FAILED(50002, 500, "푸시 토픽 구독에 실패했습니다."),
-    FCM_TOPIC_UNSUBSCRIBE_FAILED(50003, 500, "푸시 알림 구독 해제에 실패했습니다.");
+    FCM_TOPIC_UNSUBSCRIBE_FAILED(50003, 500, "푸시 알림 구독 해제에 실패했습니다."),
+
+    // Validation
+    FCM_TOKEN_REQUIRED(40001, 400, "FCM 토큰은 필수입니다."),
+    PLATFORM_REQUIRED(40002, 400, "플랫폼은 필수입니다."),
+
+    SOCIAL_TYPE_REQUIRED(40003, 400, "소셜 타입은 필수입니다."),
+    SOCIAL_TOKEN_REQUIRED(40004, 400, "소셜 토큰은 필수입니다.");
 
     private final int code;
     private final int status;
     private final String message;
+
+    // Validation annotation message에 설정한 key를 ErrorCode로 변환
+    public static ErrorCode fromValidationKey(String key) {
+        if (key == null || key.isBlank()) {
+            return INVALID_INPUT_VALUE;
+        }
+
+        try {
+            return ErrorCode.valueOf(key.trim());
+        } catch (IllegalArgumentException e) {
+            return INVALID_INPUT_VALUE;
+        }
+    }
 }
