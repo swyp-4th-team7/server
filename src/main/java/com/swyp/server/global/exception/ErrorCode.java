@@ -19,8 +19,8 @@ public enum ErrorCode {
     FORBIDDEN(40300, 403, "접근 권한이 없습니다."),
 
     // User
-    USER_NOT_FOUND(40400, 404, "사용자를 찾을 수 없습니다."),
-    DUPLICATE_EMAIL(40900, 409, "이미 사용 중인 이메일입니다."),
+    USER_NOT_FOUND(40401, 404, "사용자를 찾을 수 없습니다."),
+    DUPLICATE_EMAIL(40901, 409, "이미 사용 중인 이메일입니다."),
 
     // FCM
     FCM_SEND_FAILED(50001, 500, "푸시 알림 전송에 실패했습니다."),
