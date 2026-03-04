@@ -31,6 +31,15 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
             AuthenticationException authException)
             throws IOException, ServletException {
 
+        if (authException instanceof JwtAuthenticationException jwtEx) {
+            ErrorCode errorCode = jwtEx.getErrorCode();
+            write(
+                    response,
+                    errorCode.getStatus(),
+                    ApiResponse.fail(errorCode.getCode(), errorCode.getMessage()));
+            return;
+        }
+
         write(
                 response,
                 UNAUTHORIZED.getStatus(),

@@ -1,6 +1,7 @@
 package com.swyp.server.global.config;
 
 import com.swyp.server.global.exception.CustomException;
+import com.swyp.server.global.exception.JwtAuthenticationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (CustomException e) {
                 log.error("JWT authentication failed: {}", e.getMessage());
+                throw new JwtAuthenticationException(e.getErrorCode(), e);
             }
         }
 
