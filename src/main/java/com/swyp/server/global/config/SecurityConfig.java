@@ -1,5 +1,6 @@
 package com.swyp.server.global.config;
 
+import com.swyp.server.global.exception.SecurityExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
+    private final SecurityExceptionHandler securityExceptionHandler;
 
     private static final String[] PUBLIC_URLS = {
         "/api/v1/auth/**", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html"
@@ -34,7 +36,11 @@ public class SecurityConfig {
                                         .authenticated())
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtProvider),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        ex ->
+                                ex.authenticationEntryPoint(securityExceptionHandler)
+                                        .accessDeniedHandler(securityExceptionHandler));
 
         return http.build();
     }
