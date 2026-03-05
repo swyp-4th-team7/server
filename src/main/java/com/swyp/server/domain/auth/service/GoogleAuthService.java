@@ -76,6 +76,7 @@ public class GoogleAuthService {
         // 만료 포함 모든 검증을 직접 처리
         Long userId;
         try {
+            jwtProvider.validateToken(token);
             userId = jwtProvider.getUserIdFromToken(token);
         } catch (CustomException e) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);

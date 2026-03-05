@@ -1,5 +1,6 @@
 package com.swyp.server.global.config;
 
+import com.swyp.server.global.exception.SecurityExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -16,10 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
-
-    private static final String[] PUBLIC_URLS = {
-        "/api/v1/auth/**", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html"
-    };
+    private final SecurityExceptionHandler securityExceptionHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -28,13 +26,17 @@ public class SecurityConfig {
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth ->
-                                auth.requestMatchers(PUBLIC_URLS)
+                                auth.requestMatchers(
+                                                SecurityPath.PUBLIC_URLS.toArray(String[]::new))
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtProvider),
-                        UsernamePasswordAuthenticationFilter.class);
+                        new JwtAuthenticationFilter(jwtProvider), AuthorizationFilter.class)
+                .exceptionHandling(
+                        ex ->
+                                ex.authenticationEntryPoint(securityExceptionHandler)
+                                        .accessDeniedHandler(securityExceptionHandler));
 
         return http.build();
     }

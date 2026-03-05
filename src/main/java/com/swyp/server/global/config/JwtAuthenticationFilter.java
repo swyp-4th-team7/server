@@ -1,6 +1,7 @@
 package com.swyp.server.global.config;
 
 import com.swyp.server.global.exception.CustomException;
+import com.swyp.server.global.exception.JwtAuthenticationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final AntPathMatcher matcher = new AntPathMatcher();
 
     private final JwtProvider jwtProvider;
 
@@ -36,6 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (CustomException e) {
                 log.error("JWT authentication failed: {}", e.getMessage());
+                SecurityContextHolder.clearContext();
+                throw new JwtAuthenticationException(e.getErrorCode(), e);
             }
         }
 
@@ -48,5 +53,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String uri = request.getRequestURI();
+
+        for (String publicUrl : SecurityPath.PUBLIC_URLS) {
+            if (matcher.match(publicUrl, uri)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
