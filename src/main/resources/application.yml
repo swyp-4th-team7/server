@@ -32,8 +32,8 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  access-expiration: 180000       # 3분
-  refresh-expiration: 600000      # 10분
+  access-expiration: ${JWT_ACCESS_EXPIRATION:3600000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:1209600000}
 
 server:
   port: 8080
