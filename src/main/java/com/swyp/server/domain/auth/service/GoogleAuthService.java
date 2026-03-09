@@ -60,7 +60,8 @@ public class GoogleAuthService {
                                                 .token(refreshToken)
                                                 .build()));
 
-        return new LoginResponse(accessToken, refreshToken, user.isProfileCompleted());
+        return new LoginResponse(
+                accessToken, refreshToken, user.getUserType(), user.isProfileCompleted());
     }
 
     @Transactional
@@ -86,12 +87,15 @@ public class GoogleAuthService {
                 .findByToken(token)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
 
+        User user = userService.findById(userId);
+
         String newAccessToken = jwtProvider.generateAccessToken(userId);
         String newRefreshToken = jwtProvider.generateRefreshToken(userId);
 
         refreshTokenRepository.findByUserId(userId).ifPresent(t -> t.updateToken(newRefreshToken));
 
-        return new LoginResponse(newAccessToken, newRefreshToken, false);
+        return new LoginResponse(
+                newAccessToken, newRefreshToken, user.getUserType(), user.isProfileCompleted());
     }
 
     private GoogleIdToken.Payload verifyGoogleToken(String idToken) {
