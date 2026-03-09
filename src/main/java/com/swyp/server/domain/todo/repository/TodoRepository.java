@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
-    List<Todo> findAllByUserIDAndTodoDate(Long userId, LocalDate todoDate);
+    List<Todo> findAllByUserIdAndTodoDate(Long userId, LocalDate todoDate);
 
     Optional<Todo> findByIdAndUserId(Long todoId, Long userId);
 }
