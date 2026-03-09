@@ -8,6 +8,7 @@ import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,5 +36,10 @@ public class TodoService {
                         .build();
 
         return todoRepository.save(todo).getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Todo> getTodosByDate(Long userId, LocalDate date) {
+        return todoRepository.findAllByUserIdAndTodoDate(userId, date);
     }
 }
