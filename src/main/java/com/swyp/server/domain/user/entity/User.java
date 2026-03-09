@@ -38,9 +38,6 @@ public class User extends SoftDeletableEntity {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    @Enumerated(EnumType.STRING)
-    private WeekStartDay weekStartDay;
-
     @Column(nullable = false)
     private boolean profileCompleted;
 
@@ -58,10 +55,9 @@ public class User extends SoftDeletableEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void completeProfile(String nickname, UserType userType, WeekStartDay weekStartDay) {
+    public void completeProfile(String nickname, UserType userType) {
         this.nickname = nickname;
         this.userType = userType;
-        this.weekStartDay = weekStartDay;
         this.profileCompleted = true;
     }
 }
