@@ -44,7 +44,6 @@ public class GoogleAuthService {
         String name = (String) payload.get("name");
         String pictureUrl = (String) payload.get("picture");
 
-        boolean isNewUser = !userService.existsByEmail(email);
         User user = userService.findOrCreateUser(email, name, pictureUrl);
 
         String accessToken = jwtProvider.generateAccessToken(user.getId());
@@ -61,7 +60,7 @@ public class GoogleAuthService {
                                                 .token(refreshToken)
                                                 .build()));
 
-        return new LoginResponse(accessToken, refreshToken, isNewUser);
+        return new LoginResponse(accessToken, refreshToken, user.isProfileCompleted());
     }
 
     @Transactional
