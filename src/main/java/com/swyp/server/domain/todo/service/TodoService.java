@@ -46,8 +46,10 @@ public class TodoService {
             TodoCategory category,
             LocalDate todoDate,
             Boolean completed) {
-        Todo todo = todoRepository.findByIdAndUserId(todoId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.TODO_NOT_FOUND));
+        Todo todo =
+                todoRepository
+                        .findByIdAndUserId(todoId, userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.TODO_NOT_FOUND));
 
         if (title != null) {
             if (title.isBlank()) {
@@ -71,6 +73,16 @@ public class TodoService {
                 todo.incomplete();
             }
         }
+    }
+
+    @Transactional
+    public void deleteTodo(Long userId, Long todoId) {
+        Todo todo =
+                todoRepository
+                        .findByIdAndUserId(todoId, userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.TODO_NOT_FOUND));
+
+        todoRepository.delete(todo);
     }
 
     @Transactional(readOnly = true)
