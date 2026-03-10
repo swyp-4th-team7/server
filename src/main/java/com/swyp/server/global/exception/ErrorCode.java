@@ -37,6 +37,11 @@ public enum ErrorCode {
     SOCIAL_TYPE_REQUIRED(40003, 400, "소셜 타입은 필수입니다."),
     SOCIAL_TOKEN_REQUIRED(40004, 400, "소셜 토큰은 필수입니다."),
 
+    NICKNAME_REQUIRED(40005, 400, "닉네임은 필수입니다."),
+    NICKNAME_LENGTH_INVALID(40006, 400, "닉네임은 1자 이상 8자 이하여야 합니다."),
+    NICKNAME_PATTERN_INVALID(40007, 400, "닉네임은 특수문자를 사용할 수 없습니다."),
+    USER_TYPE_REQUIRED(40008, 400, "사용자 유형은 필수입니다."),
+
     TODO_TITLE_REQUIRED(40009, 400, "할 일 제목은 필수입니다."),
     TODO_TITLE_LENGTH_INVALID(40010, 400, "할 일 제목은 50자 이하여야 합니다."),
     TODO_CATEGORY_CATEGORY_REQUIRED(40011, 400, "할 일 카테고리는 필수입니다."),
