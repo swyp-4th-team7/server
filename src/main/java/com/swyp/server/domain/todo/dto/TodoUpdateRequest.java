@@ -1,8 +1,11 @@
 package com.swyp.server.domain.todo.dto;
 
 import com.swyp.server.domain.todo.entity.TodoCategory;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public record TodoUpdateRequest(
-        // todo validation 추가
-        String title, TodoCategory category, LocalDate todoDate, Boolean completed) {}
+        @Size(max = 50, message = "TODO_TITLE_LENGTH_INVALID") String title,
+        TodoCategory category,
+        LocalDate todoDate,
+        Boolean completed) {}
