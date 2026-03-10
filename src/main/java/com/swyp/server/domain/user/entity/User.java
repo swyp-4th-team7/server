@@ -27,8 +27,7 @@ public class User extends SoftDeletableEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String nickname;
+    @Column private String nickname;
 
     @Column private String profileImageUrl;
 
@@ -36,16 +35,29 @@ public class User extends SoftDeletableEntity {
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
+    @Column(nullable = false)
+    private boolean profileCompleted;
+
     @Builder
     public User(String email, String nickname, String profileImageUrl, Role role) {
         this.email = email;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.role = role;
+        this.profileCompleted = false;
     }
 
     public void updateProfile(String nickname, String profileImageUrl) {
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public void completeProfile(String nickname, UserType userType) {
+        this.nickname = nickname;
+        this.userType = userType;
+        this.profileCompleted = true;
     }
 }
