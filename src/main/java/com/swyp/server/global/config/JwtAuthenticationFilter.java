@@ -1,6 +1,8 @@
 package com.swyp.server.global.config;
 
+import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
+import com.swyp.server.global.exception.ErrorCode;
 import com.swyp.server.global.exception.JwtAuthenticationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,6 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final AntPathMatcher matcher = new AntPathMatcher();
 
     private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(
@@ -33,6 +36,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 jwtProvider.validateToken(token);
                 Long userId = jwtProvider.getUserIdFromToken(token);
+
+                // 탈퇴한 유저의 토큰 접근차단
+                if (!userRepository.existsById(userId)) {
+                    throw new CustomException(ErrorCode.USER_NOT_FOUND);
+                }
+
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userId, null, Collections.emptyList());

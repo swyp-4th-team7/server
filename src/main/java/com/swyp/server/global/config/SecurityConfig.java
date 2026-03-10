@@ -1,5 +1,6 @@
 package com.swyp.server.global.config;
 
+import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.SecurityExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final SecurityExceptionHandler securityExceptionHandler;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,7 +34,8 @@ public class SecurityConfig {
                                         .anyRequest()
                                         .authenticated())
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtProvider), AuthorizationFilter.class)
+                        new JwtAuthenticationFilter(jwtProvider, userRepository),
+                        AuthorizationFilter.class)
                 .exceptionHandling(
                         ex ->
                                 ex.authenticationEntryPoint(securityExceptionHandler)

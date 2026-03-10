@@ -2,6 +2,7 @@ package com.swyp.server.domain.user.service;
 
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
+import com.swyp.server.infra.fcm.repository.FcmTokenRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserWithdrawalScheduler {
 
     private final UserRepository userRepository;
+    private final FcmTokenRepository fcmTokenRepository;
 
-    // 매일 자정 실행
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
     public void hardDeleteWithdrawnUsers() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(30);
@@ -28,6 +29,7 @@ public class UserWithdrawalScheduler {
             return;
         }
 
+        deletedUsers.forEach(user -> fcmTokenRepository.deleteByUserId(user.getId()));
         userRepository.deleteAll(deletedUsers);
         log.info("Hard deleted {} withdrawn users", deletedUsers.size());
     }
