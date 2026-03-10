@@ -38,6 +38,41 @@ public class TodoService {
         return todoRepository.save(todo).getId();
     }
 
+    @Transactional
+    public void updateTodo(
+            Long userId,
+            Long todoId,
+            String title,
+            TodoCategory category,
+            LocalDate todoDate,
+            Boolean completed) {
+        Todo todo = todoRepository.findByIdAndUserId(todoId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TODO_NOT_FOUND));
+
+        if (title != null) {
+            if (title.isBlank()) {
+                throw new CustomException(ErrorCode.TODO_TITLE_REQUIRED);
+            }
+            todo.updateTitle(title);
+        }
+
+        if (category != null) {
+            todo.updateCategory(category);
+        }
+
+        if (todoDate != null) {
+            todo.updateTodoDate(todoDate);
+        }
+
+        if (completed != null) {
+            if (completed) {
+                todo.complete();
+            } else {
+                todo.incomplete();
+            }
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<Todo> getTodosByDate(Long userId, LocalDate date) {
         return todoRepository.findAllByUserIdAndTodoDate(userId, date);

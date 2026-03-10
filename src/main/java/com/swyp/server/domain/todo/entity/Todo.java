@@ -55,9 +55,15 @@ public class Todo extends AuditableEntity {
         this.completed = false;
     }
 
-    public void update(String title, TodoCategory category, LocalDate todoDate) {
+    public void updateTitle(String title) {
         this.title = title;
+    }
+
+    public void updateCategory(TodoCategory category) {
         this.category = category;
+    }
+
+    public void updateTodoDate(LocalDate todoDate) {
         this.todoDate = todoDate;
     }
 
