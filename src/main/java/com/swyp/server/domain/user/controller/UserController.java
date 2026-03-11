@@ -37,4 +37,11 @@ public class UserController {
         userService.withdraw(userId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+    @Operation(summary = "이용약관 동의")
+    @PatchMapping("/me/terms")
+    public ResponseEntity<ApiResponse<Void>> agreeToTerms(@AuthenticationPrincipal Long userId) {
+        userService.agreeToTerms(userId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 }
