@@ -1,7 +1,7 @@
 package com.swyp.server.domain.todo.entity;
 
 import com.swyp.server.domain.user.entity.User;
-import com.swyp.server.global.AuditableEntity;
+import com.swyp.server.global.SoftDeletableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "todos")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Todo extends AuditableEntity {
+public class Todo extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

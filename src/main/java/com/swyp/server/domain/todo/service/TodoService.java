@@ -82,7 +82,7 @@ public class TodoService {
                         .findByIdAndUserId(todoId, userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.TODO_NOT_FOUND));
 
-        todoRepository.delete(todo);
+        todo.delete();
     }
 
     @Transactional(readOnly = true)
