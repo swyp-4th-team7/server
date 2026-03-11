@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public record TodoUpdateRequest(
-        @Size(max = 50, message = "TODO_TITLE_LENGTH_INVALID") String title,
+        @Size(max = 12, message = "TODO_TITLE_LENGTH_INVALID") String title,
         TodoCategory category,
         LocalDate todoDate,
         Boolean completed) {}
