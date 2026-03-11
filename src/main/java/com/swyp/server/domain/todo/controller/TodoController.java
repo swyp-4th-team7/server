@@ -38,11 +38,11 @@ public class TodoController {
     @PostMapping
     public ResponseEntity<ApiResponse<TodoCreateResponse>> createTodo(
             @AuthenticationPrincipal Long userId, @Valid @RequestBody TodoCreateRequest request) {
-        Long todoId =
+        Todo todo =
                 todoService.createTodo(
                         userId, request.title(), request.category(), request.todoDate());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(new TodoCreateResponse(todoId)));
+                .body(ApiResponse.created(TodoCreateResponse.from(todo)));
     }
 
     @Operation(summary = "날짜별 할 일 조회")

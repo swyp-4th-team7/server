@@ -21,7 +21,7 @@ public class TodoService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long createTodo(Long userId, String title, TodoCategory category, LocalDate todoDate) {
+    public Todo createTodo(Long userId, String title, TodoCategory category, LocalDate todoDate) {
         User user =
                 userRepository
                         .findById(userId)
@@ -35,7 +35,7 @@ public class TodoService {
                         .todoDate(todoDate)
                         .build();
 
-        return todoRepository.save(todo).getId();
+        return todoRepository.save(todo);
     }
 
     @Transactional
