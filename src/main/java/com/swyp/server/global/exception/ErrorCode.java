@@ -44,7 +44,7 @@ public enum ErrorCode {
 
     TODO_TITLE_REQUIRED(40009, 400, "할 일 제목은 필수입니다."),
     TODO_TITLE_LENGTH_INVALID(40010, 400, "할 일 제목은 50자 이하여야 합니다."),
-    TODO_CATEGORY_CATEGORY_REQUIRED(40011, 400, "할 일 카테고리는 필수입니다."),
+    TODO_CATEGORY_REQUIRED(40011, 400, "할 일 카테고리는 필수입니다."),
     TODO_DATE_REQUIRED(40012, 400, "할 일 날짜는 필수입니다.");
 
     private final int code;
