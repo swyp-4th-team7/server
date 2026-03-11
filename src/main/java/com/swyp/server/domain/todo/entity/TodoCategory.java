@@ -4,10 +4,9 @@ public enum TodoCategory {
     STUDY,
     HOMEWORK,
     READING,
-    ACTIVITY,
-    CLEANING,
-    HELPING,
+    CREATIVITY,
     HEALTH,
-    MIND,
-    FOCUS
+    ORGANIZATION,
+    FOCUS,
+    HOUSEHOLD
 }
