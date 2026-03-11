@@ -4,6 +4,7 @@ import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.infra.fcm.repository.FcmTokenRepository;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class UserWithdrawalScheduler {
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
     public void hardDeleteWithdrawnUsers() {
-        LocalDateTime cutoff = LocalDateTime.now().minusDays(30);
+        LocalDateTime cutoff = LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusDays(30);
         List<User> deletedUsers = userRepository.findAllDeletedBefore(cutoff);
 
         if (deletedUsers.isEmpty()) {
