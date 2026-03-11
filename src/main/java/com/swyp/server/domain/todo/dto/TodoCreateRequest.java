@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public record TodoCreateRequest(
         @NotBlank(message = "TODO_TITLE_REQUIRED")
-                @Size(max = 50, message = "TODO_TITLE_LENGTH_INVALID")
+                @Size(max = 12, message = "TODO_TITLE_LENGTH_INVALID")
                 String title,
         @NotNull(message = "TODO_CATEGORY_REQUIRED") TodoCategory category,
         @NotNull(message = "TODO_DATE_REQUIRED") LocalDate todoDate) {}
