@@ -66,4 +66,13 @@ public class UserService {
         fcmTokenRepository.deleteByUserId(userId);
         user.delete();
     }
+
+    @Transactional
+    public void agreeToTerms(Long userId) {
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        user.agreeToTerms();
+    }
 }

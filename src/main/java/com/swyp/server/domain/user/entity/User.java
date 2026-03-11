@@ -9,6 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,6 +43,11 @@ public class User extends SoftDeletableEntity {
     @Column(nullable = false)
     private boolean profileCompleted;
 
+    @Column(nullable = false)
+    private boolean termsAgreed;
+
+    @Column private LocalDateTime termsAgreedAt;
+
     @Builder
     public User(String email, String nickname, String profileImageUrl, Role role) {
         this.email = email;
@@ -59,5 +66,10 @@ public class User extends SoftDeletableEntity {
         this.nickname = nickname;
         this.userType = userType;
         this.profileCompleted = true;
+    }
+
+    public void agreeToTerms() {
+        this.termsAgreed = true;
+        this.termsAgreedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 }
