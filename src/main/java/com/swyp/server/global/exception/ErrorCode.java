@@ -32,7 +32,12 @@ public enum ErrorCode {
     PLATFORM_REQUIRED(40002, 400, "플랫폼은 필수입니다."),
 
     SOCIAL_TYPE_REQUIRED(40003, 400, "소셜 타입은 필수입니다."),
-    SOCIAL_TOKEN_REQUIRED(40004, 400, "소셜 토큰은 필수입니다.");
+    SOCIAL_TOKEN_REQUIRED(40004, 400, "소셜 토큰은 필수입니다."),
+
+    NICKNAME_REQUIRED(40005, 400, "닉네임은 필수입니다."),
+    NICKNAME_LENGTH_INVALID(40006, 400, "닉네임은 1자 이상 8자 이하여야 합니다."),
+    NICKNAME_PATTERN_INVALID(40007, 400, "닉네임은 특수문자를 사용할 수 없습니다."),
+    USER_TYPE_REQUIRED(40008, 400, "사용자 유형은 필수입니다.");
 
     private final int code;
     private final int status;
