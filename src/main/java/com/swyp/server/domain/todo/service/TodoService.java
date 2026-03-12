@@ -95,6 +95,7 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public List<Todo> getTodosByDate(Long userId, LocalDate date) {
-        return todoRepository.findAllByUserIdAndTodoDate(userId, date);
+        return todoRepository.findAllByUserIdAndTodoDateOrderByCompletedAscCreatedAtAsc(
+                userId, date);
     }
 }

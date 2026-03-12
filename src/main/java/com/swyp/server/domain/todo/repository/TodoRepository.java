@@ -11,7 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
-    List<Todo> findAllByUserIdAndTodoDate(Long userId, LocalDate todoDate);
+    List<Todo> findAllByUserIdAndTodoDateOrderByCompletedAscCreatedAtAsc(
+            Long userId, LocalDate todoDate);
 
     Optional<Todo> findByIdAndUserId(Long todoId, Long userId);
 
