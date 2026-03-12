@@ -43,7 +43,7 @@ public class TodoController {
                 .body(ApiResponse.created(TodoCreateResponse.from(todo)));
     }
 
-    @Operation(summary = "날짜별 할 일 조회")
+    @Operation(summary = "오늘의 할 일 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<TodoListResponse>> getTodosByDate(
             @AuthenticationPrincipal Long userId) {
