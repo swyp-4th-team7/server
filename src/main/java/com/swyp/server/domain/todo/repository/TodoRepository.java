@@ -18,6 +18,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     void deleteByUserId(Long userId);
 
     @Modifying
-    @Query("delete from Todo t where t.deletedAt is not null and t.deletedAt <= :cutoff")
+    @Query(
+            value = "DELETE FROM todos WHERE deleted_at IS NOT NULL AND deleted_at <= :cutoff",
+            nativeQuery = true)
     int deleteAllDeletedBefore(@Param("cutoff") LocalDateTime cutoff);
 }
