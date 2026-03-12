@@ -33,7 +33,7 @@ public class UserWithdrawalScheduler {
         }
 
         deletedUsers.forEach(user -> fcmTokenRepository.deleteByUserId(user.getId()));
-        deletedUsers.forEach(user -> todoRepository.deleteByUserId(user.getId()));
+        deletedUsers.forEach(user -> todoRepository.hardDeleteAllByUserId(user.getId()));
 
         userRepository.deleteAll(deletedUsers);
         log.info("Hard deleted {} withdrawn users", deletedUsers.size());

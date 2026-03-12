@@ -35,7 +35,7 @@ public class Todo extends SoftDeletableEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 12)
     private String title;
 
     @Enumerated(EnumType.STRING)
