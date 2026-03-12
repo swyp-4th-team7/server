@@ -19,7 +19,7 @@ public record TodoCreateResponse(
                 todo.getTitle(),
                 todo.getCategory(),
                 todo.getTodoDate(),
-                todo.getCategory().getColor(),
+                todo.getColor(),
                 todo.isCompleted());
     }
 }

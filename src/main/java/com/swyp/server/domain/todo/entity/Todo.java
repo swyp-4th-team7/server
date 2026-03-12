@@ -40,6 +40,10 @@ public class Todo extends SoftDeletableEntity {
     @Column(nullable = false)
     private TodoCategory category;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TodoColor color;
+
     @Column(nullable = false)
     private LocalDate todoDate;
 
@@ -47,10 +51,12 @@ public class Todo extends SoftDeletableEntity {
     private boolean completed;
 
     @Builder
-    public Todo(User user, String title, TodoCategory category, LocalDate todoDate) {
+    public Todo(
+            User user, String title, TodoCategory category, TodoColor color, LocalDate todoDate) {
         this.user = user;
         this.title = title;
         this.category = category;
+        this.color = color;
         this.todoDate = todoDate;
         this.completed = false;
     }
@@ -61,6 +67,10 @@ public class Todo extends SoftDeletableEntity {
 
     public void updateCategory(TodoCategory category) {
         this.category = category;
+    }
+
+    public void updateColor(TodoColor color) {
+        this.color = color;
     }
 
     public void updateTodoDate(LocalDate todoDate) {

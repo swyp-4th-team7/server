@@ -11,7 +11,7 @@ public record TodoResponse(
                 todo.getId(),
                 todo.getTitle(),
                 todo.getCategory(),
-                todo.getCategory().getColor(),
+                todo.getColor(),
                 todo.isCompleted());
     }
 }

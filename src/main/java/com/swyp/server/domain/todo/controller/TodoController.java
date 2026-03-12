@@ -40,7 +40,11 @@ public class TodoController {
             @AuthenticationPrincipal Long userId, @Valid @RequestBody TodoCreateRequest request) {
         Todo todo =
                 todoService.createTodo(
-                        userId, request.title(), request.category(), request.todoDate());
+                        userId,
+                        request.title(),
+                        request.category(),
+                        request.color(),
+                        request.todoDate());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.created(TodoCreateResponse.from(todo)));
     }
@@ -66,6 +70,7 @@ public class TodoController {
                 todoId,
                 request.title(),
                 request.category(),
+                request.color(),
                 request.todoDate(),
                 request.completed());
         return ResponseEntity.ok(ApiResponse.success(null));

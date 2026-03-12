@@ -1,5 +1,8 @@
 package com.swyp.server.domain.todo.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum TodoColor {
     RED,
     PINK,

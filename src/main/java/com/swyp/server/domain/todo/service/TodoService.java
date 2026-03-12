@@ -2,6 +2,7 @@ package com.swyp.server.domain.todo.service;
 
 import com.swyp.server.domain.todo.entity.Todo;
 import com.swyp.server.domain.todo.entity.TodoCategory;
+import com.swyp.server.domain.todo.entity.TodoColor;
 import com.swyp.server.domain.todo.repository.TodoRepository;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
@@ -21,7 +22,8 @@ public class TodoService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Todo createTodo(Long userId, String title, TodoCategory category, LocalDate todoDate) {
+    public Todo createTodo(
+            Long userId, String title, TodoCategory category, TodoColor color, LocalDate todoDate) {
         User user =
                 userRepository
                         .findById(userId)
@@ -32,6 +34,7 @@ public class TodoService {
                         .user(user)
                         .title(title)
                         .category(category)
+                        .color(color)
                         .todoDate(todoDate)
                         .build();
 
@@ -44,6 +47,7 @@ public class TodoService {
             Long todoId,
             String title,
             TodoCategory category,
+            TodoColor color,
             LocalDate todoDate,
             Boolean completed) {
         Todo todo =
@@ -60,6 +64,10 @@ public class TodoService {
 
         if (category != null) {
             todo.updateCategory(category);
+        }
+
+        if (color != null) {
+            todo.updateColor(color);
         }
 
         if (todoDate != null) {
