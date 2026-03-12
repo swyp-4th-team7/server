@@ -45,10 +45,10 @@ public class TodoController {
 
     @Operation(summary = "오늘의 할 일 조회")
     @GetMapping
-    public ResponseEntity<ApiResponse<TodoListResponse>> getTodosByDate(
+    public ResponseEntity<ApiResponse<TodoListResponse>> getTodayTodos(
             @AuthenticationPrincipal Long userId) {
 
-        List<Todo> todos = todoService.getTodos(userId);
+        List<Todo> todos = todoService.getTodayTodos(userId);
         return ResponseEntity.ok(ApiResponse.success(TodoListResponse.from(todos)));
     }
 

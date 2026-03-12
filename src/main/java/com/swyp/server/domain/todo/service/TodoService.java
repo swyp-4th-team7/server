@@ -91,7 +91,7 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Todo> getTodos(Long userId) {
+    public List<Todo> getTodayTodos(Long userId) {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return todoRepository.findAllByUserIdAndTodoDateOrderByCompletedAscCreatedAtAsc(
                 userId, today);
