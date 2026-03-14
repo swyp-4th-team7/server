@@ -10,7 +10,6 @@ import com.swyp.server.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Todo", description = "할 일 API")
@@ -40,21 +38,17 @@ public class TodoController {
             @AuthenticationPrincipal Long userId, @Valid @RequestBody TodoCreateRequest request) {
         Todo todo =
                 todoService.createTodo(
-                        userId,
-                        request.title(),
-                        request.category(),
-                        request.color(),
-                        request.todoDate());
+                        userId, request.title(), request.category(), request.color());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.created(TodoCreateResponse.from(todo)));
     }
 
-    @Operation(summary = "날짜별 할 일 조회")
+    @Operation(summary = "오늘의 할 일 조회")
     @GetMapping
-    public ResponseEntity<ApiResponse<TodoListResponse>> getTodosByDate(
-            @AuthenticationPrincipal Long userId, @RequestParam LocalDate date) {
+    public ResponseEntity<ApiResponse<TodoListResponse>> getTodayTodos(
+            @AuthenticationPrincipal Long userId) {
 
-        List<Todo> todos = todoService.getTodosByDate(userId, date);
+        List<Todo> todos = todoService.getTodayTodos(userId);
         return ResponseEntity.ok(ApiResponse.success(TodoListResponse.from(todos)));
     }
 
@@ -71,7 +65,6 @@ public class TodoController {
                 request.title(),
                 request.category(),
                 request.color(),
-                request.todoDate(),
                 request.completed());
         return ResponseEntity.ok(ApiResponse.success(null));
     }

@@ -9,6 +9,7 @@ import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,9 @@ public class TodoService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Todo createTodo(
-            Long userId, String title, TodoCategory category, TodoColor color, LocalDate todoDate) {
+    public Todo createTodo(Long userId, String title, TodoCategory category, TodoColor color) {
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+
         User user =
                 userRepository
                         .findById(userId)
@@ -35,7 +37,7 @@ public class TodoService {
                         .title(title)
                         .category(category)
                         .color(color)
-                        .todoDate(todoDate)
+                        .todoDate(today)
                         .build();
 
         return todoRepository.save(todo);
@@ -48,7 +50,6 @@ public class TodoService {
             String title,
             TodoCategory category,
             TodoColor color,
-            LocalDate todoDate,
             Boolean completed) {
         Todo todo =
                 todoRepository
@@ -68,10 +69,6 @@ public class TodoService {
 
         if (color != null) {
             todo.updateColor(color);
-        }
-
-        if (todoDate != null) {
-            todo.updateTodoDate(todoDate);
         }
 
         if (completed != null) {
@@ -94,8 +91,9 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Todo> getTodosByDate(Long userId, LocalDate date) {
+    public List<Todo> getTodayTodos(Long userId) {
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return todoRepository.findAllByUserIdAndTodoDateOrderByCompletedAscCreatedAtAsc(
-                userId, date);
+                userId, today);
     }
 }
