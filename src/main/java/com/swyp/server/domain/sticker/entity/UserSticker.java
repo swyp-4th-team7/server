@@ -1,7 +1,7 @@
 package com.swyp.server.domain.sticker.entity;
 
 import com.swyp.server.domain.user.entity.User;
-import com.swyp.server.global.SoftDeletableEntity;
+import com.swyp.server.global.AuditableEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
         })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserSticker extends SoftDeletableEntity {
+public class UserSticker extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
