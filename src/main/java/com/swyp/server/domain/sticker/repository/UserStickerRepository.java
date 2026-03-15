@@ -8,4 +8,6 @@ public interface UserStickerRepository extends JpaRepository<UserSticker, Long> 
     List<UserSticker> findAllByUserId(Long userId);
 
     boolean existsByUserIdAndStickerId(Long userId, Long stickerId);
+
+    void deleteAllByUserId(Long userId);
 }
