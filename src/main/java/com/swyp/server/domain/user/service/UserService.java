@@ -1,6 +1,7 @@
 package com.swyp.server.domain.user.service;
 
 import com.swyp.server.domain.auth.repository.RefreshTokenRepository;
+import com.swyp.server.domain.user.dto.UserResponse;
 import com.swyp.server.domain.user.entity.Role;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
@@ -45,6 +46,15 @@ public class UserService {
         return userRepository
                 .findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getMe(Long userId) {
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return UserResponse.from(user);
     }
 
     @Transactional

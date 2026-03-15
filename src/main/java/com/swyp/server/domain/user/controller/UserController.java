@@ -1,6 +1,7 @@
 package com.swyp.server.domain.user.controller;
 
 import com.swyp.server.domain.user.dto.ProfileRequest;
+import com.swyp.server.domain.user.dto.UserResponse;
 import com.swyp.server.domain.user.service.UserService;
 import com.swyp.server.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,11 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "User", description = "유저 API")
 @RestController
@@ -22,6 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+
+    @Operation(summary = "내 정보 조회")
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> getMe(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(ApiResponse.success(userService.getMe(userId)));
+    }
 
     @Operation(summary = "내 프로필 설정")
     @PatchMapping("/me")
