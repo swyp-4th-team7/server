@@ -8,7 +8,6 @@ import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -101,13 +100,6 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true)
-    public List<LocalDate> getWeeklyCompletedDates(Long userId, LocalDate today) {
-        LocalDate startDate = getWeekStart(today);
-        LocalDate endDate = getWeekEnd(today);
-        return getCompletedDates(userId, startDate, endDate);
-    }
-
-    @Transactional(readOnly = true)
     public List<LocalDate> getCompletedDates(Long userId, LocalDate startDate, LocalDate endDate) {
         List<Todo> todos =
                 todoRepository.findAllByUserIdAndTodoDateBetween(userId, startDate, endDate);
@@ -120,13 +112,5 @@ public class TodoService {
                 .map(Map.Entry::getKey)
                 .sorted()
                 .toList();
-    }
-
-    private LocalDate getWeekStart(LocalDate today) {
-        return today.with(DayOfWeek.MONDAY);
-    }
-
-    private LocalDate getWeekEnd(LocalDate today) {
-        return getWeekStart(today).plusDays(6);
     }
 }
