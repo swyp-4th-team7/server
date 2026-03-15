@@ -8,9 +8,12 @@ import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,5 +98,35 @@ public class TodoService {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return todoRepository.findAllByUserIdAndTodoDateOrderByCompletedAscCreatedAtAsc(
                 userId, today);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocalDate> getWeeklyCompletedDates(Long userId, LocalDate today) {
+        LocalDate startDate = getWeekStart(today);
+        LocalDate endDate = getWeekEnd(today);
+        return getCompletedDates(userId, startDate, endDate);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocalDate> getCompletedDates(Long userId, LocalDate startDate, LocalDate endDate) {
+        List<Todo> todos =
+                todoRepository.findAllByUserIdAndTodoDateBetween(userId, startDate, endDate);
+
+        Map<LocalDate, List<Todo>> groupedByDate =
+                todos.stream().collect(Collectors.groupingBy(Todo::getTodoDate));
+
+        return groupedByDate.entrySet().stream()
+                .filter(entry -> entry.getValue().stream().allMatch(Todo::isCompleted))
+                .map(Map.Entry::getKey)
+                .sorted()
+                .toList();
+    }
+
+    private LocalDate getWeekStart(LocalDate today) {
+        return today.with(DayOfWeek.MONDAY);
+    }
+
+    private LocalDate getWeekEnd(LocalDate today) {
+        return getWeekStart(today).plusDays(6);
     }
 }
