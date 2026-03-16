@@ -113,4 +113,11 @@ public class TodoService {
                 .sorted()
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public int countCompletedDates(Long userId) {
+        LocalDate startDate = LocalDate.MIN;
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        return getCompletedDates(userId, startDate, today).size();
+    }
 }

@@ -7,4 +7,4 @@ public record WeeklyStickerResponse(
         String weekLabel,
         LocalDate startDate,
         LocalDate endDate,
-        List<CompletedDateStickerResponse> stickers) {}
+        List<DateStickerResponse> stickers) {}
