@@ -8,6 +8,7 @@ import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
+import com.swyp.server.global.util.DateUtils;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -116,7 +117,12 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public int countCompletedDates(Long userId) {
-        LocalDate startDate = LocalDate.MIN;
+        LocalDate startDate =
+                userRepository
+                        .findById(userId)
+                        .map(user -> user.getCreatedAt().toLocalDate())
+                        .orElse(DateUtils.APPLICATION_LAUNCH_DATE);
+
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return getCompletedDates(userId, startDate, today).size();
     }
