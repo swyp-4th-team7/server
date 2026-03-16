@@ -8,9 +8,12 @@ import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
+import com.swyp.server.global.util.DateUtils;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,5 +98,32 @@ public class TodoService {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return todoRepository.findAllByUserIdAndTodoDateOrderByCompletedAscCreatedAtAsc(
                 userId, today);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocalDate> getCompletedDates(Long userId, LocalDate startDate, LocalDate endDate) {
+        List<Todo> todos =
+                todoRepository.findAllByUserIdAndTodoDateBetween(userId, startDate, endDate);
+
+        Map<LocalDate, List<Todo>> groupedByDate =
+                todos.stream().collect(Collectors.groupingBy(Todo::getTodoDate));
+
+        return groupedByDate.entrySet().stream()
+                .filter(entry -> entry.getValue().stream().allMatch(Todo::isCompleted))
+                .map(Map.Entry::getKey)
+                .sorted()
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public int countCompletedDates(Long userId) {
+        LocalDate startDate =
+                userRepository
+                        .findById(userId)
+                        .map(user -> user.getCreatedAt().toLocalDate())
+                        .orElse(DateUtils.APPLICATION_LAUNCH_DATE);
+
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        return getCompletedDates(userId, startDate, today).size();
     }
 }
