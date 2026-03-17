@@ -11,6 +11,8 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByInviteCode(String code);
+
     boolean existsByEmail(String email);
 
     boolean existsByInviteCode(String code);
