@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ScheduleService {
 
     private static final int SCHEDULE_LOOKUP_DAYS = 30;
+    private static final ZoneId SEOUL_ZONE = ZoneId.of("Asia/Seoul");
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
@@ -43,7 +44,7 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public List<ScheduleResponse> getSchedules(Long userId) {
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        LocalDate today = LocalDate.now(SEOUL_ZONE);
         LocalDate end = today.plusDays(SCHEDULE_LOOKUP_DAYS);
         return scheduleRepository
                 .findAllByUserIdAndScheduleDateBetweenOrderByScheduleDateAsc(userId, today, end)
