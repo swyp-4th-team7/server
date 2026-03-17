@@ -38,14 +38,21 @@ public enum ErrorCode {
     SOCIAL_TOKEN_REQUIRED(40004, 400, "소셜 토큰은 필수입니다."),
 
     NICKNAME_REQUIRED(40005, 400, "닉네임은 필수입니다."),
-    NICKNAME_LENGTH_INVALID(40006, 400, "닉네임은 1자 이상 8자 이하여야 합니다."),
+    NICKNAME_LENGTH_INVALID(40006, 400, "닉네임은 1자 이상 12자 이하여야 합니다."),
     NICKNAME_PATTERN_INVALID(40007, 400, "닉네임은 특수문자를 사용할 수 없습니다."),
     USER_TYPE_REQUIRED(40008, 400, "사용자 유형은 필수입니다."),
 
     TODO_TITLE_REQUIRED(40009, 400, "할 일 제목은 필수입니다."),
-    TODO_TITLE_LENGTH_INVALID(40010, 400, "할 일 제목은 12자 이하여야 합니다."),
     TODO_CATEGORY_REQUIRED(40011, 400, "할 일 카테고리는 필수입니다."),
-    TODO_COLOR_REQUIRED(40013, 400, "할 일 색상은 필수입니다.");
+    TODO_COLOR_REQUIRED(40013, 400, "할 일 색상은 필수입니다."),
+
+    // Schedule
+    SCHEDULE_NOT_FOUND(40403, 404, "일정을 찾을 수 없습니다."),
+
+    // Validation
+    SCHEDULE_TITLE_REQUIRED(40014, 400, "일정 제목은 필수입니다."),
+    SCHEDULE_CATEGORY_REQUIRED(40016, 400, "일정 카테고리는 필수입니다."),
+    SCHEDULE_DATE_REQUIRED(40017, 400, "일정 날짜는 필수입니다.");
 
     private final int code;
     private final int status;
