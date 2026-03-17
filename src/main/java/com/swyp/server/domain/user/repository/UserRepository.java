@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByInviteCode(String code);
+
     @Query(
             value = "SELECT * FROM users WHERE deleted_at IS NOT NULL AND deleted_at <= :cutoff",
             nativeQuery = true)

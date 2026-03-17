@@ -45,7 +45,10 @@ public enum ErrorCode {
     TODO_TITLE_REQUIRED(40009, 400, "할 일 제목은 필수입니다."),
     TODO_TITLE_LENGTH_INVALID(40010, 400, "할 일 제목은 12자 이하여야 합니다."),
     TODO_CATEGORY_REQUIRED(40011, 400, "할 일 카테고리는 필수입니다."),
-    TODO_COLOR_REQUIRED(40013, 400, "할 일 색상은 필수입니다.");
+    TODO_COLOR_REQUIRED(40013, 400, "할 일 색상은 필수입니다."),
+
+    // server
+    INVITE_CODE_GENERATION_FAILED(500001, 500, "초대코드 생성에 실패했습니다.");
 
     private final int code;
     private final int status;

@@ -8,6 +8,7 @@ import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
+import com.swyp.server.global.util.InviteCodeGenerator;
 import com.swyp.server.infra.fcm.repository.FcmTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final FcmTokenRepository fcmTokenRepository;
+    private final InviteCodeGenerator inviteCodeGenerator;
 
     @Transactional
     public User findOrCreateUser(String email, String nickname, String profileImageUrl) {
+        String inviteCode = generateUniqueInviteCode();
         return userRepository
                 .findByEmail(email)
                 .orElseGet(
@@ -33,6 +36,7 @@ public class UserService {
                                                 .nickname(nickname)
                                                 .profileImageUrl(profileImageUrl)
                                                 .role(Role.USER)
+                                                .inviteCode(inviteCode)
                                                 .build()));
     }
 
@@ -84,5 +88,15 @@ public class UserService {
                         .findById(userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.agreeToTerms();
+    }
+
+    private String generateUniqueInviteCode() {
+        for (int i = 0; i < 5; i++) {
+            String code = inviteCodeGenerator.generate();
+            if (!userRepository.existsByInviteCode(code)) {
+                return code;
+            }
+        }
+        throw new CustomException(ErrorCode.INVITE_CODE_GENERATION_FAILED);
     }
 }

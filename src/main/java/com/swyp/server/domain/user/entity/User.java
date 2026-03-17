@@ -40,7 +40,11 @@ public class User extends SoftDeletableEntity {
     private Role role;
 
     @Enumerated(EnumType.STRING)
+    @Column
     private UserType userType;
+
+    @Column(nullable = false, unique = true, length = 10)
+    private String inviteCode;
 
     @Column(nullable = false)
     private boolean profileCompleted;
@@ -51,11 +55,13 @@ public class User extends SoftDeletableEntity {
     @Column private LocalDateTime termsAgreedAt;
 
     @Builder
-    public User(String email, String nickname, String profileImageUrl, Role role) {
+    public User(
+            String email, String nickname, String profileImageUrl, Role role, String inviteCode) {
         this.email = email;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.role = role;
+        this.inviteCode = inviteCode;
         this.profileCompleted = false;
     }
 
