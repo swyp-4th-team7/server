@@ -5,6 +5,7 @@ import com.swyp.server.domain.family.dto.ConnectedMembersResponse;
 import com.swyp.server.domain.family.service.FamilyRelationService;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Family", description = "가족 API")
+@Tag(name = "Family", description = "가족 연결 관리 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/family")
@@ -27,6 +28,7 @@ public class FamilyRelationController {
 
     private final FamilyRelationService familyRelationService;
 
+    @Operation(summary = "초대코드로 사용자 연결")
     @PostMapping("/connect")
     public ResponseEntity<ApiResponse<Void>> connectByInviteCode(
             @AuthenticationPrincipal Long userId, @RequestBody @Valid ConnectRequest request) {
@@ -34,6 +36,7 @@ public class FamilyRelationController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    @Operation(summary = "연결된 사용자 목로고 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<ConnectedMembersResponse>> getConnectedMembers(
             @AuthenticationPrincipal Long userId) {
@@ -42,6 +45,7 @@ public class FamilyRelationController {
                 ApiResponse.success(ConnectedMembersResponse.from(connectedMembers)));
     }
 
+    @Operation(summary = "특정 사용자와 연결 끊기")
     @DeleteMapping("/{targetUserId}")
     public ResponseEntity<ApiResponse<Void>> disconnect(
             @AuthenticationPrincipal Long userId, @PathVariable Long targetUserId) {
