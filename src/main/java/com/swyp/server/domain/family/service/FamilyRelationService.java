@@ -41,9 +41,9 @@ public class FamilyRelationService {
         }
 
         familyRelationRepository.save(
-                FamilyRelation.builder().targetUser(requestUser).targetUser(targetUser).build());
+                FamilyRelation.builder().ownerUser(requestUser).targetUser(targetUser).build());
         familyRelationRepository.save(
-                FamilyRelation.builder().targetUser(targetUser).targetUser(requestUser).build());
+                FamilyRelation.builder().ownerUser(targetUser).targetUser(requestUser).build());
     }
 
     @Transactional(readOnly = true)
