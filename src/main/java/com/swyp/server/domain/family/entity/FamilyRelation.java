@@ -21,25 +21,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         uniqueConstraints = {
-            @UniqueConstraint(name = "uk_family_member_user", columnNames = "user_id")
+            @UniqueConstraint(
+                    name = "uk_family_relation_owner_target",
+                    columnNames = {"owner_user_id", "target_user_id"})
         })
-public class FamilyMember extends AuditableEntity {
+public class FamilyRelation extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "family_id", nullable = false)
-    private Family family;
+    @JoinColumn(name = "owner_user_id", nullable = false)
+    private User ownerUser;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "target_user_id", nullable = false)
+    private User targetUser;
 
     @Builder
-    public FamilyMember(Family family, User user) {
-        this.family = family;
-        this.user = user;
+    public FamilyRelation(User ownerUser, User targetUser) {
+        this.ownerUser = ownerUser;
+        this.targetUser = targetUser;
     }
 }

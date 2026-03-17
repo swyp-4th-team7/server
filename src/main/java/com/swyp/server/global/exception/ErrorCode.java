@@ -26,10 +26,10 @@ public enum ErrorCode {
     TODO_NOT_FOUND(40402, 404, "할 일을 찾을 수 없습니다."),
 
     // Family
-    ALREADY_IN_FAMILY(40903, 409, "이미 가족에 속한 사용자입니다."),
+    ALREADY_CONNECTED_FAMILY_MEMBER(40903, 409, "이미 연결된 사용자입니다."),
     INVALID_INVITE_CODE(40403, 404, "유효하지 않은 초대코드입니다."),
     SELF_INVITE_NOT_ALLOWED(40014, 400, "자신의 초대코드는 사용할 수 없습니다."),
-    FAMILY_MEMBER_NOT_FOUND(40404, 404, "가족 구성원 정보를 찾을 수 없습니다."),
+    FAMILY_RELATION_NOT_FOUND(40404, 404, "가족 연결 정보를 찾을 수 없습니다."),
 
     // FCM
     FCM_SEND_FAILED(50001, 500, "푸시 알림 전송에 실패했습니다."),
