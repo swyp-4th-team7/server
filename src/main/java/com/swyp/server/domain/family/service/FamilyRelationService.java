@@ -29,7 +29,7 @@ public class FamilyRelationService {
         User targetUser =
                 userRepository
                         .findByInviteCode(inviteCode)
-                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                        .orElseThrow(() -> new CustomException(ErrorCode.INVALID_INVITE_CODE));
 
         if (requestUser.getId().equals(targetUser.getId())) {
             throw new CustomException(ErrorCode.SELF_INVITE_NOT_ALLOWED);
