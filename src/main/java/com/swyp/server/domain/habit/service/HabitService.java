@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class HabitService {
@@ -48,6 +50,11 @@ public class HabitService {
                         .build();
 
         return habitRepository.save(habit);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Habit> getHabits(Long userId){
+        return habitRepository.findAllByUserIdOrderByIsCompletedAscIdDesc(userId);
     }
 
     @Transactional

@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Habit", description = "습관 API")
 @RestController
 @RequestMapping("/api/v1/habits")
@@ -38,6 +40,20 @@ public class HabitController {
                 userId, request.title(), request.duration());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.created(ParentHabitCreateResponse.from(habit)));
+    }
+
+    @Operation(summary = "습관 조회(자녀)")
+    @GetMapping
+    public ResponseEntity<ApiResponse<ChildHabitListResponse>> getChildHabits(@AuthenticationPrincipal Long userId){
+        List<Habit> habits = habitService.getHabits(userId);
+        return ResponseEntity.ok(ApiResponse.success(ChildHabitListResponse.from(habits)));
+    }
+
+    @Operation(summary = "습관 조회(부모)")
+    @GetMapping
+    public ResponseEntity<ApiResponse<ParentHabitListResponse>> getParentHabits(@AuthenticationPrincipal Long userId){
+        List<Habit> habits = habitService.getHabits(userId);
+        return ResponseEntity.ok(ApiResponse.success(ParentHabitListResponse.from(habits)));
     }
 
     @Operation(summary = "습관 수정(자녀)")
