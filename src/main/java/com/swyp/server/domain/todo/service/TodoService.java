@@ -12,6 +12,7 @@ import com.swyp.server.global.exception.ErrorCode;
 import com.swyp.server.global.util.DateUtils;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -129,6 +130,13 @@ public class TodoService {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return getCompletedDates(userId, startDate, today).size();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TodoCategory> getCategories(UserType userType) {
+        return Arrays.stream(TodoCategory.values())
+                .filter(category -> category.isAllowed(userType))
+                .toList();
     }
 
     private void validateCategory(UserType userType, TodoCategory category) {

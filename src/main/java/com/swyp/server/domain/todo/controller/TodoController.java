@@ -1,11 +1,15 @@
 package com.swyp.server.domain.todo.controller;
 
+import com.swyp.server.domain.todo.dto.TodoCategoryListResponse;
 import com.swyp.server.domain.todo.dto.TodoCreateRequest;
 import com.swyp.server.domain.todo.dto.TodoCreateResponse;
 import com.swyp.server.domain.todo.dto.TodoListResponse;
 import com.swyp.server.domain.todo.dto.TodoUpdateRequest;
 import com.swyp.server.domain.todo.entity.Todo;
+import com.swyp.server.domain.todo.entity.TodoCategory;
 import com.swyp.server.domain.todo.service.TodoService;
+import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.domain.user.service.UserService;
 import com.swyp.server.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TodoController {
 
     private final TodoService todoService;
+    private final UserService userService;
 
     @Operation(summary = "할 일 생성")
     @PostMapping
@@ -76,5 +81,15 @@ public class TodoController {
         todoService.deleteTodo(userId, todoId);
 
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @Operation(summary = "할 일 카테고리 조회")
+    @GetMapping("/categories")
+    public ResponseEntity<ApiResponse<?>> getCategories(@AuthenticationPrincipal Long userId) {
+
+        User user = userService.findById(userId);
+        List<TodoCategory> categories = todoService.getCategories(user.getUserType());
+
+        return ResponseEntity.ok(ApiResponse.success(TodoCategoryListResponse.from(categories)));
     }
 }
