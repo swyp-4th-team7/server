@@ -84,14 +84,6 @@ public class HabitService {
         }
     }
 
-    @Transactional
-    public void deleteHabit(Long userId, Long habitId) {
-        Habit habit = habitRepository.
-                findByIdAndUserId(habitId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
-
-        habit.delete();
-    }
 
 
 }

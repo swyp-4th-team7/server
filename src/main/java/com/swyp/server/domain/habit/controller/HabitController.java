@@ -40,5 +40,41 @@ public class HabitController {
                 .body(ApiResponse.created(ParentHabitCreateResponse.from(habit)));
     }
 
-    
+    @Operation(summary = "습관 수정(자녀)")
+    @PatchMapping("/{habitId}")
+    public ResponseEntity<ApiResponse<Void>> updateChildHabit(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long habitId,
+            @Valid @RequestBody ChildHabitUpdateRequest request){
+
+        habitService.updateChildHabit(
+                userId,
+                habitId,
+                request.title(),
+                request.duration(),
+                request.reward(),
+                request.isCompleted());
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @Operation(summary = "습관 수정(부모)")
+    @PatchMapping("/{habitId}")
+    public ResponseEntity<ApiResponse<Void>> updateParentHabit(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long habitId,
+            @Valid @RequestBody ParentHabitUpdateRequest request){
+
+        habitService.updateParentHabit(
+                userId,
+                habitId,
+                request.title(),
+                request.duration(),
+                request.isCompleted());
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+
+
+
+
 }
