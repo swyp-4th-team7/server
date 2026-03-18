@@ -145,6 +145,10 @@ public class TodoService {
     }
 
     private void validateCategory(UserType userType, TodoCategory category) {
+        if (userType == null) {
+            throw new CustomException(ErrorCode.USER_TYPE_REQUIRED);
+        }
+
         if (category == null || !category.isAllowed(userType)) {
             throw new CustomException(ErrorCode.TODO_CATEGORY_INVALID);
         }
