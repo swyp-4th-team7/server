@@ -25,19 +25,21 @@ public class UserService {
 
     @Transactional
     public User findOrCreateUser(String email, String nickname, String profileImageUrl) {
-        String inviteCode = generateUniqueInviteCode();
+
         return userRepository
                 .findByEmail(email)
                 .orElseGet(
-                        () ->
-                                userRepository.save(
-                                        User.builder()
-                                                .email(email)
-                                                .nickname(nickname)
-                                                .profileImageUrl(profileImageUrl)
-                                                .role(Role.USER)
-                                                .inviteCode(inviteCode)
-                                                .build()));
+                        () -> {
+                            String inviteCode = generateUniqueInviteCode();
+                            return userRepository.save(
+                                    User.builder()
+                                            .email(email)
+                                            .nickname(nickname)
+                                            .profileImageUrl(profileImageUrl)
+                                            .role(Role.USER)
+                                            .inviteCode(inviteCode)
+                                            .build());
+                        });
     }
 
     @Transactional(readOnly = true)
