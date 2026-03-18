@@ -134,13 +134,18 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public List<TodoCategory> getCategories(UserType userType) {
+
+        if (userType == null) {
+            throw new CustomException(ErrorCode.USER_TYPE_REQUIRED);
+        }
+
         return Arrays.stream(TodoCategory.values())
                 .filter(category -> category.isAllowed(userType))
                 .toList();
     }
 
     private void validateCategory(UserType userType, TodoCategory category) {
-        if (!category.isAllowed(userType)) {
+        if (category == null || !category.isAllowed(userType)) {
             throw new CustomException(ErrorCode.TODO_CATEGORY_INVALID);
         }
     }

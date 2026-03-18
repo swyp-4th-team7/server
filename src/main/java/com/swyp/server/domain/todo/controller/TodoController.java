@@ -85,7 +85,8 @@ public class TodoController {
 
     @Operation(summary = "할 일 카테고리 조회")
     @GetMapping("/categories")
-    public ResponseEntity<ApiResponse<?>> getCategories(@AuthenticationPrincipal Long userId) {
+    public ResponseEntity<ApiResponse<TodoCategoryListResponse>> getCategories(
+            @AuthenticationPrincipal Long userId) {
 
         User user = userService.findById(userId);
         List<TodoCategory> categories = todoService.getCategories(user.getUserType());

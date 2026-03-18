@@ -23,6 +23,9 @@ public enum TodoCategory {
     private final Set<UserType> allowedUserTypes;
 
     public boolean isAllowed(UserType userType) {
+        if (userType == null) {
+            return false;
+        }
         return allowedUserTypes.contains(userType);
     }
 }
