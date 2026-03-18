@@ -1,4 +1,4 @@
-package com.swyp.server.domain.todo.entity;
+package com.swyp.server.domain.schedule.entity;
 
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.SoftDeletableEntity;
@@ -21,11 +21,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name = "todos")
+@Table(name = "schedules")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLRestriction("deleted_at IS NULL")
-public class Todo extends SoftDeletableEntity {
+public class Schedule extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,50 +40,28 @@ public class Todo extends SoftDeletableEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TodoCategory category;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TodoColor color;
+    private ScheduleCategory category;
 
     @Column(nullable = false)
-    private LocalDate todoDate;
-
-    @Column(nullable = false)
-    private boolean completed;
+    private LocalDate scheduleDate;
 
     @Builder
-    public Todo(
-            User user, String title, TodoCategory category, TodoColor color, LocalDate todoDate) {
+    public Schedule(User user, String title, ScheduleCategory category, LocalDate scheduleDate) {
         this.user = user;
         this.title = title;
         this.category = category;
-        this.color = color;
-        this.todoDate = todoDate;
-        this.completed = false;
+        this.scheduleDate = scheduleDate;
     }
 
     public void updateTitle(String title) {
         this.title = title;
     }
 
-    public void updateCategory(TodoCategory category) {
+    public void updateCategory(ScheduleCategory category) {
         this.category = category;
     }
 
-    public void updateColor(TodoColor color) {
-        this.color = color;
-    }
-
-    public void updateTodoDate(LocalDate todoDate) {
-        this.todoDate = todoDate;
-    }
-
-    public void complete() {
-        this.completed = true;
-    }
-
-    public void incomplete() {
-        this.completed = false;
+    public void updateScheduleDate(LocalDate scheduleDate) {
+        this.scheduleDate = scheduleDate;
     }
 }

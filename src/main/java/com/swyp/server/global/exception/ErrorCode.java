@@ -27,14 +27,17 @@ public enum ErrorCode {
 
     // Family
     ALREADY_CONNECTED_FAMILY_MEMBER(40903, 409, "이미 연결된 사용자입니다."),
-    INVALID_INVITE_CODE(40403, 404, "유효하지 않은 초대코드입니다."),
-    SELF_INVITE_NOT_ALLOWED(40014, 400, "자신의 초대코드는 사용할 수 없습니다."),
-    FAMILY_RELATION_NOT_FOUND(40404, 404, "가족 연결 정보를 찾을 수 없습니다."),
+    INVALID_INVITE_CODE(40404, 404, "유효하지 않은 초대코드입니다."),
+    SELF_INVITE_NOT_ALLOWED(40018, 400, "자신의 초대코드는 사용할 수 없습니다."),
+    FAMILY_RELATION_NOT_FOUND(40405, 404, "가족 연결 정보를 찾을 수 없습니다."),
 
     // FCM
     FCM_SEND_FAILED(50001, 500, "푸시 알림 전송에 실패했습니다."),
     FCM_TOPIC_SUBSCRIBE_FAILED(50002, 500, "푸시 토픽 구독에 실패했습니다."),
     FCM_TOPIC_UNSUBSCRIBE_FAILED(50003, 500, "푸시 알림 구독 해제에 실패했습니다."),
+
+    // Schedule
+    SCHEDULE_NOT_FOUND(40403, 404, "일정을 찾을 수 없습니다."),
 
     // Validation
     FCM_TOKEN_REQUIRED(40001, 400, "FCM 토큰은 필수입니다."),
@@ -44,14 +47,17 @@ public enum ErrorCode {
     SOCIAL_TOKEN_REQUIRED(40004, 400, "소셜 토큰은 필수입니다."),
 
     NICKNAME_REQUIRED(40005, 400, "닉네임은 필수입니다."),
-    NICKNAME_LENGTH_INVALID(40006, 400, "닉네임은 1자 이상 8자 이하여야 합니다."),
+    NICKNAME_LENGTH_INVALID(40006, 400, "닉네임은 1자 이상 12자 이하여야 합니다."),
     NICKNAME_PATTERN_INVALID(40007, 400, "닉네임은 특수문자를 사용할 수 없습니다."),
     USER_TYPE_REQUIRED(40008, 400, "사용자 유형은 필수입니다."),
 
     TODO_TITLE_REQUIRED(40009, 400, "할 일 제목은 필수입니다."),
-    TODO_TITLE_LENGTH_INVALID(40010, 400, "할 일 제목은 12자 이하여야 합니다."),
     TODO_CATEGORY_REQUIRED(40011, 400, "할 일 카테고리는 필수입니다."),
     TODO_COLOR_REQUIRED(40013, 400, "할 일 색상은 필수입니다."),
+
+    SCHEDULE_TITLE_REQUIRED(40014, 400, "일정 제목은 필수입니다."),
+    SCHEDULE_CATEGORY_REQUIRED(40016, 400, "일정 카테고리는 필수입니다."),
+    SCHEDULE_DATE_REQUIRED(40017, 400, "일정 날짜는 필수입니다."),
 
     // server
     INVITE_CODE_GENERATION_FAILED(500001, 500, "초대코드 생성에 실패했습니다.");

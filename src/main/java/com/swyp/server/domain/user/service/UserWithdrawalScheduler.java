@@ -1,5 +1,6 @@
 package com.swyp.server.domain.user.service;
 
+import com.swyp.server.domain.schedule.repository.ScheduleRepository;
 import com.swyp.server.domain.sticker.repository.UserStickerRepository;
 import com.swyp.server.domain.todo.repository.TodoRepository;
 import com.swyp.server.domain.user.entity.User;
@@ -23,6 +24,7 @@ public class UserWithdrawalScheduler {
     private final FcmTokenRepository fcmTokenRepository;
     private final TodoRepository todoRepository;
     private final UserStickerRepository userStickerRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
@@ -37,6 +39,7 @@ public class UserWithdrawalScheduler {
         deletedUsers.forEach(user -> fcmTokenRepository.deleteByUserId(user.getId()));
         deletedUsers.forEach(user -> todoRepository.hardDeleteAllByUserId(user.getId()));
         deletedUsers.forEach(user -> userStickerRepository.deleteAllByUserId(user.getId()));
+        deletedUsers.forEach(user -> scheduleRepository.hardDeleteAllByUserId(user.getId()));
 
         userRepository.deleteAll(deletedUsers);
         log.info("Hard deleted {} withdrawn users", deletedUsers.size());
