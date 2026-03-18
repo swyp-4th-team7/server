@@ -73,6 +73,15 @@ public class HabitController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    @Operation(summary = "습관 삭제")
+    @DeleteMapping("/{habitId}")
+    public ResponseEntity<ApiResponse<Void>> deleteHabit(@AuthenticationPrincipal Long userId, @PathVariable Long habitId){
+        habitService.deleteHabit(userId, habitId);
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+
 
 
 
