@@ -55,7 +55,7 @@ public class FamilyRelationService {
     @Transactional
     public void disconnect(Long userId, Long targetUserId) {
         if (!familyRelationRepository.existsByOwnerUserIdAndTargetUserId(userId, targetUserId)) {
-            throw new CustomException(ErrorCode.ALREADY_CONNECTED_FAMILY_MEMBER);
+            throw new CustomException(ErrorCode.FAMILY_RELATION_NOT_FOUND);
         }
 
         familyRelationRepository.deleteByOwnerUserIdAndTargetUserId(userId, targetUserId);
