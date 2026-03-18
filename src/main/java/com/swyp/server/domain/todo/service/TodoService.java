@@ -5,6 +5,7 @@ import com.swyp.server.domain.todo.entity.TodoCategory;
 import com.swyp.server.domain.todo.entity.TodoColor;
 import com.swyp.server.domain.todo.repository.TodoRepository;
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
@@ -33,6 +34,8 @@ public class TodoService {
                 userRepository
                         .findById(userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        validateCategory(user.getUserType(), category);
 
         Todo todo =
                 Todo.builder()
@@ -67,6 +70,7 @@ public class TodoService {
         }
 
         if (category != null) {
+            validateCategory(todo.getUser().getUserType(), category);
             todo.updateCategory(category);
         }
 
@@ -125,5 +129,11 @@ public class TodoService {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return getCompletedDates(userId, startDate, today).size();
+    }
+
+    private void validateCategory(UserType userType, TodoCategory category) {
+        if (!category.isAllowed(userType)) {
+            throw new CustomException(ErrorCode.TODO_CATEGORY_INVALID);
+        }
     }
 }
