@@ -23,7 +23,7 @@ public class HabitController {
     private final HabitService habitService;
 
     @Operation(summary = "습관 생성(자녀)")
-    @PostMapping
+    @PostMapping("/child")
     public ResponseEntity<ApiResponse<ChildHabitCreateResponse>> createChildHabit(
             @AuthenticationPrincipal Long userId, @Valid @RequestBody ChildHabitCreateRequest request){
         Habit habit = habitService.createChildHabit(
@@ -33,7 +33,7 @@ public class HabitController {
     }
 
     @Operation(summary = "습관 생성(부모)")
-    @PostMapping
+    @PostMapping("/parent")
     public ResponseEntity<ApiResponse<ParentHabitCreateResponse>> createParentHabit(
             @AuthenticationPrincipal Long userId, @Valid @RequestBody ParentHabitCreateRequest request){
         Habit habit = habitService.createParentHabit(
@@ -43,21 +43,21 @@ public class HabitController {
     }
 
     @Operation(summary = "습관 조회(자녀)")
-    @GetMapping
+    @GetMapping("/child")
     public ResponseEntity<ApiResponse<ChildHabitListResponse>> getChildHabits(@AuthenticationPrincipal Long userId){
         List<Habit> habits = habitService.getHabits(userId);
         return ResponseEntity.ok(ApiResponse.success(ChildHabitListResponse.from(habits)));
     }
 
     @Operation(summary = "습관 조회(부모)")
-    @GetMapping
+    @GetMapping("/parent")
     public ResponseEntity<ApiResponse<ParentHabitListResponse>> getParentHabits(@AuthenticationPrincipal Long userId){
         List<Habit> habits = habitService.getHabits(userId);
         return ResponseEntity.ok(ApiResponse.success(ParentHabitListResponse.from(habits)));
     }
 
     @Operation(summary = "습관 수정(자녀)")
-    @PatchMapping("/{habitId}")
+    @PatchMapping("/{habitId}/child")
     public ResponseEntity<ApiResponse<Void>> updateChildHabit(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long habitId,
@@ -74,7 +74,7 @@ public class HabitController {
     }
 
     @Operation(summary = "습관 수정(부모)")
-    @PatchMapping("/{habitId}")
+    @PatchMapping("/{habitId}/parent")
     public ResponseEntity<ApiResponse<Void>> updateParentHabit(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long habitId,
@@ -96,10 +96,4 @@ public class HabitController {
 
         return ResponseEntity.ok(ApiResponse.success(null));
     }
-
-
-
-
-
-
 }
