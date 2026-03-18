@@ -62,7 +62,7 @@ public enum ErrorCode {
     INVITE_CODE_REQUIRED(40015, 400, "초대 코드는 필수입니다."),
 
     // server
-    INVITE_CODE_GENERATION_FAILED(50001, 500, "초대코드 생성에 실패했습니다.");
+    INVITE_CODE_GENERATION_FAILED(50002, 500, "초대코드 생성에 실패했습니다.");
 
     private final int code;
     private final int status;
