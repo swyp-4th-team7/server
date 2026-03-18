@@ -45,6 +45,7 @@ public enum ErrorCode {
     TODO_TITLE_REQUIRED(40009, 400, "할 일 제목은 필수입니다."),
     TODO_CATEGORY_REQUIRED(40011, 400, "할 일 카테고리는 필수입니다."),
     TODO_COLOR_REQUIRED(40013, 400, "할 일 색상은 필수입니다."),
+    TODO_CATEGORY_INVALID(40018, 400, "유효하지 않은 할 일 카테고리 입니다."),
 
     // Schedule
     SCHEDULE_NOT_FOUND(40403, 404, "일정을 찾을 수 없습니다."),

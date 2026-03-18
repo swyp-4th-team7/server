@@ -5,12 +5,14 @@ import com.swyp.server.domain.todo.entity.TodoCategory;
 import com.swyp.server.domain.todo.entity.TodoColor;
 import com.swyp.server.domain.todo.repository.TodoRepository;
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
 import com.swyp.server.global.util.DateUtils;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +35,8 @@ public class TodoService {
                 userRepository
                         .findById(userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        validateCategory(user.getUserType(), category);
 
         Todo todo =
                 Todo.builder()
@@ -67,6 +71,7 @@ public class TodoService {
         }
 
         if (category != null) {
+            validateCategory(todo.getUser().getUserType(), category);
             todo.updateCategory(category);
         }
 
@@ -125,5 +130,27 @@ public class TodoService {
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return getCompletedDates(userId, startDate, today).size();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TodoCategory> getCategories(UserType userType) {
+
+        if (userType == null) {
+            throw new CustomException(ErrorCode.USER_TYPE_REQUIRED);
+        }
+
+        return Arrays.stream(TodoCategory.values())
+                .filter(category -> category.isAllowed(userType))
+                .toList();
+    }
+
+    private void validateCategory(UserType userType, TodoCategory category) {
+        if (userType == null) {
+            throw new CustomException(ErrorCode.USER_TYPE_REQUIRED);
+        }
+
+        if (category == null || !category.isAllowed(userType)) {
+            throw new CustomException(ErrorCode.TODO_CATEGORY_INVALID);
+        }
     }
 }
