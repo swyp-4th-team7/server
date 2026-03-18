@@ -36,7 +36,7 @@ public class FamilyRelationController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    @Operation(summary = "연결된 사용자 목로고 조회")
+    @Operation(summary = "연결된 사용자 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<ConnectedMembersResponse>> getConnectedMembers(
             @AuthenticationPrincipal Long userId) {
