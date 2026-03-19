@@ -9,11 +9,10 @@ import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,15 +21,17 @@ public class HabitService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Habit createHabit(Long userId, HabitCreateRequest request){
-        User user = userRepository.
-                findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public Habit createHabit(Long userId, HabitCreateRequest request) {
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String reward = null;
 
-        if(user.getUserType().equals(UserType.CHILD)){
-            if(request.reward() == null || request.reward().isBlank()) throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
+        if (user.getUserType().equals(UserType.CHILD)) {
+            if (request.reward() == null || request.reward().isBlank())
+                throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
             reward = request.reward();
         }
 
@@ -46,45 +47,48 @@ public class HabitService {
     }
 
     @Transactional(readOnly = true)
-    public List<Habit> getHabits(Long userId){
+    public List<Habit> getHabits(Long userId) {
         return habitRepository.findAllByUserIdOrderByIsCompletedAscIdDesc(userId);
     }
 
     @Transactional
     public void updateHabit(Long userId, Long habitId, HabitUpdateRequest request) {
-        User user = userRepository.
-                findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String reward = null;
 
-        if(user.getUserType().equals(UserType.CHILD)){
-            if(request.reward() == null || request.reward().isBlank()) throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
+        if (user.getUserType().equals(UserType.CHILD)) {
+            if (request.reward() == null || request.reward().isBlank())
+                throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
             reward = request.reward();
         }
 
-        Habit habit = habitRepository
-                .findByIdAndUserId(habitId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+        Habit habit =
+                habitRepository
+                        .findByIdAndUserId(habitId, userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
         habit.updateTitle(request.title());
         habit.updateDuration(request.duration());
         habit.updateReward(reward);
 
-        if(request.isCompleted()){
+        if (request.isCompleted()) {
             habit.complete();
-        } else{
+        } else {
             habit.incomplete();
         }
     }
 
     @Transactional
     public void deleteHabit(Long userId, Long habitId) {
-        Habit habit = habitRepository.
-                findByIdAndUserId(habitId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+        Habit habit =
+                habitRepository
+                        .findByIdAndUserId(habitId, userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
         habit.delete();
     }
-
 }

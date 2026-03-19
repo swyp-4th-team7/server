@@ -37,8 +37,7 @@ public class Habit extends SoftDeletableEntity {
     private boolean isCompleted;
 
     @Builder
-    public Habit(
-            User user, String title, HabitDuration duration, String reward) {
+    public Habit(User user, String title, HabitDuration duration, String reward) {
         this.user = user;
         this.title = title;
         this.duration = duration;

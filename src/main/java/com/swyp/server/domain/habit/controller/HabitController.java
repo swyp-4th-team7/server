@@ -7,13 +7,12 @@ import com.swyp.server.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Habit", description = "습관 API")
 @RestController
@@ -25,16 +24,16 @@ public class HabitController {
     @Operation(summary = "습관 생성")
     @PostMapping()
     public ResponseEntity<ApiResponse<HabitCreateResponse>> createHabit(
-            @AuthenticationPrincipal Long userId, @Valid @RequestBody HabitCreateRequest request){
-        Habit habit = habitService.createHabit(
-                userId, request);
+            @AuthenticationPrincipal Long userId, @Valid @RequestBody HabitCreateRequest request) {
+        Habit habit = habitService.createHabit(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.created(HabitCreateResponse.from(habit)));
     }
 
     @Operation(summary = "습관 조회")
     @GetMapping()
-    public ResponseEntity<ApiResponse<HabitListResponse>> getHabits(@AuthenticationPrincipal Long userId){
+    public ResponseEntity<ApiResponse<HabitListResponse>> getHabits(
+            @AuthenticationPrincipal Long userId) {
         List<Habit> habits = habitService.getHabits(userId);
         return ResponseEntity.ok(ApiResponse.success(HabitListResponse.from(habits)));
     }
@@ -44,18 +43,16 @@ public class HabitController {
     public ResponseEntity<ApiResponse<Void>> updateHabit(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long habitId,
-            @Valid @RequestBody HabitUpdateRequest request){
+            @Valid @RequestBody HabitUpdateRequest request) {
 
-        habitService.updateHabit(
-                userId,
-                habitId,
-                request);
+        habitService.updateHabit(userId, habitId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     @Operation(summary = "습관 삭제")
     @DeleteMapping("/{habitId}")
-    public ResponseEntity<ApiResponse<Void>> deleteHabit(@AuthenticationPrincipal Long userId, @PathVariable Long habitId){
+    public ResponseEntity<ApiResponse<Void>> deleteHabit(
+            @AuthenticationPrincipal Long userId, @PathVariable Long habitId) {
         habitService.deleteHabit(userId, habitId);
 
         return ResponseEntity.ok(ApiResponse.success(null));

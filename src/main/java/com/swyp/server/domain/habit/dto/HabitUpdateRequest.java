@@ -8,4 +8,4 @@ public record HabitUpdateRequest(
         @NotBlank(message = "HABIT_TITLE_REQUIRED") String title,
         @NotNull(message = "HABIT_DURATION_REQUIRED") HabitDuration duration,
         String reward,
-        @NotNull(message = "HABIT_COMPLETED_REQUIRED")Boolean isCompleted) {}
+        @NotNull(message = "HABIT_COMPLETED_REQUIRED") Boolean isCompleted) {}

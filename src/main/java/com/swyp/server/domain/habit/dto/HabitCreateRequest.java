@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record HabitCreateRequest(
         @NotBlank(message = "HABIT_TITLE_REQUIRED") String title,
-        @NotNull(message = "HABIT_DURATION_REQUIRED")HabitDuration duration,
+        @NotNull(message = "HABIT_DURATION_REQUIRED") HabitDuration duration,
         String reward) {}
