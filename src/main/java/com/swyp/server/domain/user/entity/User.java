@@ -40,7 +40,11 @@ public class User extends SoftDeletableEntity {
     private Role role;
 
     @Enumerated(EnumType.STRING)
+    @Column
     private UserType userType;
+
+    @Column(unique = true, length = 8)
+    private String inviteCode;
 
     @Column(nullable = false)
     private boolean profileCompleted;
@@ -64,9 +68,10 @@ public class User extends SoftDeletableEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void completeProfile(String nickname, UserType userType) {
+    public void completeProfile(String nickname, UserType userType, String inviteCode) {
         this.nickname = nickname;
         this.userType = userType;
+        this.inviteCode = inviteCode;
         this.profileCompleted = true;
     }
 
