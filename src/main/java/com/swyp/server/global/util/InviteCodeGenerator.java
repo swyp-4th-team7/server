@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class InviteCodeGenerator {
 
     private static final String LETTERS_AND_DIGITS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final int LENGTH = 10;
+    private static final int LENGTH = 8;
 
     private final SecureRandom random = new SecureRandom();
 

@@ -43,7 +43,7 @@ public class User extends SoftDeletableEntity {
     @Column
     private UserType userType;
 
-    @Column(unique = true, length = 10)
+    @Column(unique = true, length = 8)
     private String inviteCode;
 
     @Column(nullable = false)
