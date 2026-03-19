@@ -1,10 +1,9 @@
-package com.swyp.server.domain.notification;
+package com.swyp.server.global.notification;
 
 import com.swyp.server.domain.todo.repository.TodoRepository;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
-import com.swyp.server.global.notification.NotificationService;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -40,6 +39,9 @@ public class PushNotificationScheduler {
         LocalDate today = LocalDate.now(SEOUL_ZONE);
         List<User> children = userRepository.findAllActiveByUserType(UserType.CHILD);
         List<Long> childIds = children.stream().map(User::getId).toList();
+        if (childIds.isEmpty()) {
+            return;
+        }
 
         List<Long> targetIds = todoRepository.findUserIdsWithIncompleteTodo(childIds, today);
 

@@ -19,9 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             nativeQuery = true)
     List<User> findAllDeletedBefore(@Param("cutoff") LocalDateTime cutoff);
 
-    @Query("SELECT u FROM User u WHERE u.deletedAt IS NULL")
+    @Query("SELECT u FROM User u")
     List<User> findAllActive();
 
-    @Query("SELECT u FROM User u WHERE u.deletedAt IS NULL AND u.userType = :userType")
+    @Query("SELECT u FROM User u WHERE u.userType = :userType")
     List<User> findAllActiveByUserType(@Param("userType") UserType userType);
 }
