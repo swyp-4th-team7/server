@@ -61,6 +61,14 @@ public enum ErrorCode {
     SCHEDULE_CATEGORY_REQUIRED(40016, 400, "일정 카테고리는 필수입니다."),
     SCHEDULE_DATE_REQUIRED(40017, 400, "일정 날짜는 필수입니다."),
 
+    // Habit
+    HABIT_NOT_FOUND(40406, 404, "습관을 찾을 수 없습니다."),
+
+    HABIT_TITLE_REQUIRED(40020, 400, "습관 제목은 필수입니다."),
+    HABIT_DURATION_REQUIRED(40021, 400, "습관 기간 설정은 필수입니다."),
+    HABIT_REWARD_REQUIRED(40022, 400, "습관 보상 설정은 필수입니다."),
+    HABIT_COMPLETED_REQUIRED(40023, 400, "습관 완료 여부는 필수입니다."),
+
     INVITE_CODE_REQUIRED(40015, 400, "초대 코드는 필수입니다.");
 
     private final int code;
