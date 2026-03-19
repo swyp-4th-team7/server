@@ -22,70 +22,34 @@ import java.util.List;
 public class HabitController {
     private final HabitService habitService;
 
-    @Operation(summary = "습관 생성(자녀)")
-    @PostMapping("/child")
-    public ResponseEntity<ApiResponse<ChildHabitCreateResponse>> createChildHabit(
-            @AuthenticationPrincipal Long userId, @Valid @RequestBody ChildHabitCreateRequest request){
-        Habit habit = habitService.createChildHabit(
-                userId, request.title(), request.duration(), request.reward());
+    @Operation(summary = "습관 생성")
+    @PostMapping("")
+    public ResponseEntity<ApiResponse<HabitCreateResponse>> createHabit(
+            @AuthenticationPrincipal Long userId, @Valid @RequestBody HabitCreateRequest request){
+        Habit habit = habitService.createHabit(
+                userId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(ChildHabitCreateResponse.from(habit)));
+                .body(ApiResponse.created(HabitCreateResponse.from(habit)));
     }
 
-    @Operation(summary = "습관 생성(부모)")
-    @PostMapping("/parent")
-    public ResponseEntity<ApiResponse<ParentHabitCreateResponse>> createParentHabit(
-            @AuthenticationPrincipal Long userId, @Valid @RequestBody ParentHabitCreateRequest request){
-        Habit habit = habitService.createParentHabit(
-                userId, request.title(), request.duration());
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created(ParentHabitCreateResponse.from(habit)));
-    }
-
-    @Operation(summary = "습관 조회(자녀)")
-    @GetMapping("/child")
-    public ResponseEntity<ApiResponse<ChildHabitListResponse>> getChildHabits(@AuthenticationPrincipal Long userId){
+    @Operation(summary = "습관 조회")
+    @GetMapping("")
+    public ResponseEntity<ApiResponse<HabitListResponse>> getHabits(@AuthenticationPrincipal Long userId){
         List<Habit> habits = habitService.getHabits(userId);
-        return ResponseEntity.ok(ApiResponse.success(ChildHabitListResponse.from(habits)));
+        return ResponseEntity.ok(ApiResponse.success(HabitListResponse.from(habits)));
     }
 
-    @Operation(summary = "습관 조회(부모)")
-    @GetMapping("/parent")
-    public ResponseEntity<ApiResponse<ParentHabitListResponse>> getParentHabits(@AuthenticationPrincipal Long userId){
-        List<Habit> habits = habitService.getHabits(userId);
-        return ResponseEntity.ok(ApiResponse.success(ParentHabitListResponse.from(habits)));
-    }
-
-    @Operation(summary = "습관 수정(자녀)")
-    @PatchMapping("/{habitId}/child")
-    public ResponseEntity<ApiResponse<Void>> updateChildHabit(
+    @Operation(summary = "습관 수정")
+    @PatchMapping("/{habitId}")
+    public ResponseEntity<ApiResponse<Void>> updateHabit(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long habitId,
-            @Valid @RequestBody ChildHabitUpdateRequest request){
+            @Valid @RequestBody HabitUpdateRequest request){
 
-        habitService.updateChildHabit(
+        habitService.updateHabit(
                 userId,
                 habitId,
-                request.title(),
-                request.duration(),
-                request.reward(),
-                request.isCompleted());
-        return ResponseEntity.ok(ApiResponse.success(null));
-    }
-
-    @Operation(summary = "습관 수정(부모)")
-    @PatchMapping("/{habitId}/parent")
-    public ResponseEntity<ApiResponse<Void>> updateParentHabit(
-            @AuthenticationPrincipal Long userId,
-            @PathVariable Long habitId,
-            @Valid @RequestBody ParentHabitUpdateRequest request){
-
-        habitService.updateParentHabit(
-                userId,
-                habitId,
-                request.title(),
-                request.duration(),
-                request.isCompleted());
+                request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

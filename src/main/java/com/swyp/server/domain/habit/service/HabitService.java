@@ -1,9 +1,11 @@
 package com.swyp.server.domain.habit.service;
 
+import com.swyp.server.domain.habit.dto.HabitCreateRequest;
+import com.swyp.server.domain.habit.dto.HabitUpdateRequest;
 import com.swyp.server.domain.habit.entity.Habit;
-import com.swyp.server.domain.habit.entity.HabitDuration;
 import com.swyp.server.domain.habit.repository.HabitRepository;
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
@@ -20,33 +22,28 @@ public class HabitService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Habit createChildHabit(Long userId, String title, HabitDuration duration, String reward){
+    public Habit createHabit(Long userId, HabitCreateRequest request){
         User user = userRepository.
                 findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        String reward = new String();
+
+        if(user.getUserType().equals(UserType.CHILD)){
+            if(request.reward() == null) throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
+            reward = request.reward();
+        }
+
+        else if(user.getUserType().equals(UserType.PARENT)){
+            reward = null;
+        }
+
         Habit habit =
                 Habit.builder()
                         .user(user)
-                        .title(title)
-                        .duration(duration)
+                        .title(request.title())
+                        .duration(request.duration())
                         .reward(reward)
-                        .build();
-
-        return habitRepository.save(habit);
-    }
-
-    @Transactional
-    public Habit createParentHabit(Long userId, String title, HabitDuration duration){
-        User user = userRepository.
-                findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        Habit habit =
-                Habit.builder()
-                        .user(user)
-                        .title(title)
-                        .duration(duration)
                         .build();
 
         return habitRepository.save(habit);
@@ -58,35 +55,33 @@ public class HabitService {
     }
 
     @Transactional
-    public void updateChildHabit(Long userId, Long habitId, String title, HabitDuration duration, String reward, Boolean isCompleted) {
-        Habit habit = habitRepository
-                .findByIdAndUserId(habitId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+    public void updateHabit(Long userId, Long habitId, HabitUpdateRequest request) {
+        User user = userRepository.
+                findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        habit.updateTitle(title);
-        habit.updateDuration(duration);
-        habit.updateReward(reward);
+        String reward = new String();
 
-        if(isCompleted){
-            habit.complete();
-        } else{
-            habit.incomplete();
+        if(user.getUserType().equals(UserType.CHILD)){
+            if(request.reward() == null) throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
+            reward = request.reward();
         }
 
-    }
+        else if(user.getUserType().equals(UserType.PARENT)){
+            reward = null;
+        }
 
-    @Transactional
-    public void updateParentHabit(Long userId, Long habitId, String title, HabitDuration duration, Boolean isCompleted) {
         Habit habit = habitRepository
                 .findByIdAndUserId(habitId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
-        habit.updateTitle(title);
-        habit.updateDuration(duration);
+        habit.updateTitle(request.title());
+        habit.updateDuration(request.duration());
+        habit.updateReward(reward);
 
-        if(isCompleted){
+        if(request.isCompleted()){
             habit.complete();
-        }else{
+        } else{
             habit.incomplete();
         }
     }
