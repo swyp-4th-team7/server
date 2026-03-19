@@ -58,10 +58,10 @@ public enum ErrorCode {
     // Habit
     HABIT_NOT_FOUND(40404, 404, "습관을 찾을 수 없습니다."),
 
-    HABIT_TITLE_REQUIRED(40018, 400, "습관 제목은 필수입니다."),
-    HABIT_DURATION_REQUIRED(40019, 400, "습관 기간 설정은 필수입니다."),
-    HABIT_REWARD_REQUIRED(40020, 400, "습관 보상 설정은 필수입니다."),
-    HABIT_COMPLETED_REQUIRED(40021, 400, "습관 완료 여부는 필수입니다.");
+    HABIT_TITLE_REQUIRED(40019, 400, "습관 제목은 필수입니다."),
+    HABIT_DURATION_REQUIRED(40020, 400, "습관 기간 설정은 필수입니다."),
+    HABIT_REWARD_REQUIRED(40021, 400, "습관 보상 설정은 필수입니다."),
+    HABIT_COMPLETED_REQUIRED(40022, 400, "습관 완료 여부는 필수입니다.");
 
     private final int code;
     private final int status;
