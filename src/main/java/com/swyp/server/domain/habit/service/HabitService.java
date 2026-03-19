@@ -27,15 +27,11 @@ public class HabitService {
                 findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        String reward = new String();
+        String reward = null;
 
         if(user.getUserType().equals(UserType.CHILD)){
-            if(request.reward() == null) throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
+            if(request.reward() == null || request.reward().isBlank()) throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
             reward = request.reward();
-        }
-
-        else if(user.getUserType().equals(UserType.PARENT)){
-            reward = null;
         }
 
         Habit habit =
@@ -60,15 +56,11 @@ public class HabitService {
                 findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        String reward = new String();
+        String reward = null;
 
         if(user.getUserType().equals(UserType.CHILD)){
-            if(request.reward() == null) throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
+            if(request.reward() == null || request.reward().isBlank()) throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
             reward = request.reward();
-        }
-
-        else if(user.getUserType().equals(UserType.PARENT)){
-            reward = null;
         }
 
         Habit habit = habitRepository
