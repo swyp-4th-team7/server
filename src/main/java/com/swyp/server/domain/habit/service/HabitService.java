@@ -1,6 +1,7 @@
 package com.swyp.server.domain.habit.service;
 
 import com.swyp.server.domain.habit.dto.HabitCreateRequest;
+import com.swyp.server.domain.habit.dto.HabitListResponse;
 import com.swyp.server.domain.habit.dto.HabitUpdateRequest;
 import com.swyp.server.domain.habit.entity.Habit;
 import com.swyp.server.domain.habit.repository.HabitRepository;
@@ -47,8 +48,9 @@ public class HabitService {
     }
 
     @Transactional(readOnly = true)
-    public List<Habit> getHabits(Long userId) {
-        return habitRepository.findAllByUserIdOrderByIsCompletedAscIdDesc(userId);
+    public HabitListResponse getHabits(Long userId) {
+        List<Habit> habits = habitRepository.findAllByUserIdOrderByIsCompletedAscIdDesc(userId);
+        return HabitListResponse.from(habits);
     }
 
     @Transactional

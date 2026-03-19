@@ -7,7 +7,6 @@ import com.swyp.server.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +33,8 @@ public class HabitController {
     @GetMapping()
     public ResponseEntity<ApiResponse<HabitListResponse>> getHabits(
             @AuthenticationPrincipal Long userId) {
-        List<Habit> habits = habitService.getHabits(userId);
-        return ResponseEntity.ok(ApiResponse.success(HabitListResponse.from(habits)));
+        HabitListResponse habits = habitService.getHabits(userId);
+        return ResponseEntity.ok(ApiResponse.success(habits));
     }
 
     @Operation(summary = "습관 수정")
