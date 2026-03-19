@@ -30,7 +30,7 @@ public class HabitService {
 
         String reward = null;
 
-        if (user.getUserType().equals(UserType.CHILD)) {
+        if (user.getUserType() == UserType.CHILD) {
             if (request.reward() == null || request.reward().isBlank())
                 throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
             reward = request.reward();
@@ -62,7 +62,7 @@ public class HabitService {
 
         String reward = null;
 
-        if (user.getUserType().equals(UserType.CHILD)) {
+        if (user.getUserType() == UserType.CHILD) {
             if (request.reward() == null || request.reward().isBlank())
                 throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
             reward = request.reward();
