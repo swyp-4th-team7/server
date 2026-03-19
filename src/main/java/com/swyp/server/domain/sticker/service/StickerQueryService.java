@@ -6,6 +6,8 @@ import com.swyp.server.domain.sticker.dto.WeeklyStickerResponse;
 import com.swyp.server.domain.sticker.entity.UserStickerProgress;
 import com.swyp.server.domain.sticker.repository.UserStickerProgressRepository;
 import com.swyp.server.domain.todo.service.TodoService;
+import com.swyp.server.global.exception.CustomException;
+import com.swyp.server.global.exception.ErrorCode;
 import com.swyp.server.global.util.DateUtils;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,11 +23,14 @@ public class StickerQueryService {
     // 초기 개발 단계에서는 DEFAULT 스티커 하나, 보드판의 크기는 30으로 고정하였음
     private static final String DEFAULT_STICKER_CODE = "BASIC_STICKER";
     private static final int BOARD_SIZE = 30;
+    private static final int MIN_WEEK_OFFSET = -52;
+    private static final int MAX_WEEK_OFFSET = 52;
 
     private final TodoService todoService;
     private final UserStickerProgressRepository progressRepository;
 
     public WeeklyStickerResponse getWeeklyStickers(Long userId, LocalDate today, int weekOffset) {
+        validateWeekOffset(weekOffset);
         LocalDate targetDate = today.plusWeeks(weekOffset);
 
         LocalDate startDate = DateUtils.getWeekStart(targetDate);
@@ -86,5 +91,11 @@ public class StickerQueryService {
         int month = targetDate.getMonthValue();
         int weekOfMonth = (targetDate.getDayOfMonth() - 1) / 7 + 1;
         return month + "월 " + weekOfMonth + "주차";
+    }
+
+    private void validateWeekOffset(int weekOffset) {
+        if (weekOffset < MIN_WEEK_OFFSET || weekOffset > MAX_WEEK_OFFSET) {
+            throw new CustomException(ErrorCode.WEEK_OFFSET_INVALID);
+        }
     }
 }
