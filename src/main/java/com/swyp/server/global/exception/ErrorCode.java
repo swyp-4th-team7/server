@@ -56,7 +56,7 @@ public enum ErrorCode {
     SCHEDULE_DATE_REQUIRED(40017, 400, "일정 날짜는 필수입니다."),
 
     // Habit
-    HABIT_NOT_FOUND(40404, 404, "습관을 찾을 수 없습니다."),
+    HABIT_NOT_FOUND(40405, 404, "습관을 찾을 수 없습니다."),
 
     HABIT_TITLE_REQUIRED(40019, 400, "습관 제목은 필수입니다."),
     HABIT_DURATION_REQUIRED(40020, 400, "습관 기간 설정은 필수입니다."),
