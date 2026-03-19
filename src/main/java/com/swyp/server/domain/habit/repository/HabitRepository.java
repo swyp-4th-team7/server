@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface HabitRepository extends JpaRepository<Habit, Long> {
-    Optional<Habit> findByIdAndUserId(Long todoId, Long userId);
+    Optional<Habit> findByIdAndUserId(Long habitId, Long userId);
     List<Habit> findAllByUserIdOrderByIsCompletedAscIdDesc(Long userId);
 }
