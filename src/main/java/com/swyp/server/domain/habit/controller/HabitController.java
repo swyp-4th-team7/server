@@ -23,7 +23,7 @@ public class HabitController {
     private final HabitService habitService;
 
     @Operation(summary = "습관 생성")
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<ApiResponse<HabitCreateResponse>> createHabit(
             @AuthenticationPrincipal Long userId, @Valid @RequestBody HabitCreateRequest request){
         Habit habit = habitService.createHabit(
@@ -33,7 +33,7 @@ public class HabitController {
     }
 
     @Operation(summary = "습관 조회")
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<ApiResponse<HabitListResponse>> getHabits(@AuthenticationPrincipal Long userId){
         List<Habit> habits = habitService.getHabits(userId);
         return ResponseEntity.ok(ApiResponse.success(HabitListResponse.from(habits)));
