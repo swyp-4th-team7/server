@@ -43,7 +43,7 @@ public class User extends SoftDeletableEntity {
     @Column
     private UserType userType;
 
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(unique = true, length = 10)
     private String inviteCode;
 
     @Column(nullable = false)
@@ -55,13 +55,11 @@ public class User extends SoftDeletableEntity {
     @Column private LocalDateTime termsAgreedAt;
 
     @Builder
-    public User(
-            String email, String nickname, String profileImageUrl, Role role, String inviteCode) {
+    public User(String email, String nickname, String profileImageUrl, Role role) {
         this.email = email;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.role = role;
-        this.inviteCode = inviteCode;
         this.profileCompleted = false;
     }
 
@@ -70,9 +68,10 @@ public class User extends SoftDeletableEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void completeProfile(String nickname, UserType userType) {
+    public void completeProfile(String nickname, UserType userType, String inviteCode) {
         this.nickname = nickname;
         this.userType = userType;
+        this.inviteCode = inviteCode;
         this.profileCompleted = true;
     }
 

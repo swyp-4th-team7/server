@@ -29,17 +29,14 @@ public class UserService {
         return userRepository
                 .findByEmail(email)
                 .orElseGet(
-                        () -> {
-                            String inviteCode = generateUniqueInviteCode();
-                            return userRepository.save(
-                                    User.builder()
-                                            .email(email)
-                                            .nickname(nickname)
-                                            .profileImageUrl(profileImageUrl)
-                                            .role(Role.USER)
-                                            .inviteCode(inviteCode)
-                                            .build());
-                        });
+                        () ->
+                                userRepository.save(
+                                        User.builder()
+                                                .email(email)
+                                                .nickname(nickname)
+                                                .profileImageUrl(profileImageUrl)
+                                                .role(Role.USER)
+                                                .build()));
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +66,8 @@ public class UserService {
                 userRepository
                         .findById(userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        user.completeProfile(nickname, userType);
+
+        user.completeProfile(nickname, userType, generateUniqueInviteCode());
     }
 
     @Transactional
