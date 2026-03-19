@@ -1,6 +1,7 @@
 package com.swyp.server.domain.user.repository;
 
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.domain.user.entity.UserType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +18,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             value = "SELECT * FROM users WHERE deleted_at IS NOT NULL AND deleted_at <= :cutoff",
             nativeQuery = true)
     List<User> findAllDeletedBefore(@Param("cutoff") LocalDateTime cutoff);
+
+    @Query("SELECT u FROM User u WHERE u.deletedAt IS NULL")
+    List<User> findAllActive();
+
+    @Query("SELECT u FROM User u WHERE u.deletedAt IS NULL AND u.userType = :userType")
+    List<User> findAllActiveByUserType(@Param("userType") UserType userType);
 }
