@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Sticker", description = "스티커 API")
@@ -29,9 +30,12 @@ public class StickerController {
     @Operation(summary = "주간 스티커 조회")
     @GetMapping("/weekly")
     public ResponseEntity<ApiResponse<WeeklyStickerResponse>> getWeeklyStickers(
-            @AuthenticationPrincipal Long userId) {
+            @AuthenticationPrincipal Long userId,
+            @RequestParam(defaultValue = "0") int weekOffset) {
+
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        WeeklyStickerResponse response = stickerQueryService.getWeeklyStickers(userId, today);
+        WeeklyStickerResponse response =
+                stickerQueryService.getWeeklyStickers(userId, today, weekOffset);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }

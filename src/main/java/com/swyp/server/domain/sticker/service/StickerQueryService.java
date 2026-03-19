@@ -25,9 +25,11 @@ public class StickerQueryService {
     private final TodoService todoService;
     private final UserStickerProgressRepository progressRepository;
 
-    public WeeklyStickerResponse getWeeklyStickers(Long userId, LocalDate today) {
-        LocalDate startDate = DateUtils.getWeekStart(today);
-        LocalDate endDate = DateUtils.getWeekEnd(today);
+    public WeeklyStickerResponse getWeeklyStickers(Long userId, LocalDate today, int weekOffset) {
+        LocalDate targetDate = today.plusWeeks(weekOffset);
+
+        LocalDate startDate = DateUtils.getWeekStart(targetDate);
+        LocalDate endDate = DateUtils.getWeekEnd(targetDate);
         List<LocalDate> completedDates = todoService.getCompletedDates(userId, startDate, endDate);
 
         List<DateStickerResponse> stickers =
@@ -44,7 +46,8 @@ public class StickerQueryService {
                                 })
                         .toList();
 
-        return new WeeklyStickerResponse(createWeekLabel(today), startDate, endDate, stickers);
+        return new WeeklyStickerResponse(
+                createWeekLabel(targetDate), weekOffset, startDate, endDate, stickers);
     }
 
     public StickerBoardResponse getStickerBoard(Long userId) {
@@ -79,9 +82,9 @@ public class StickerQueryService {
         return filledSlots == BOARD_SIZE && currentBoard > confirmedBoard;
     }
 
-    private String createWeekLabel(LocalDate today) {
-        int month = today.getMonthValue();
-        int weekOfMonth = (today.getDayOfMonth() - 1) / 7 + 1;
+    private String createWeekLabel(LocalDate targetDate) {
+        int month = targetDate.getMonthValue();
+        int weekOfMonth = (targetDate.getDayOfMonth() - 1) / 7 + 1;
         return month + "월 " + weekOfMonth + "주차";
     }
 }
