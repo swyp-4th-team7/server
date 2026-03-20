@@ -142,7 +142,7 @@ public class HabitService {
 
         if (request.isCompleted()) {
             habit.complete();
-            habit.updateRewardStatus(RewardStatus.COMPLETE);
+            habit.updateRewardStatus(RewardStatus.REWARD_WAITING);
         } else {
             habit.incomplete();
         }
