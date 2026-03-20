@@ -12,9 +12,6 @@ public record HabitRewardDetailResponse(
                 (habit.getUser().getUserType().equals(UserType.PARENT)) ? null : habit.getReward();
 
         return new HabitRewardDetailResponse(
-                habit.getId(),
-                habit.getTitle(),
-                habit.getDuration().getLabel(),
-                reward);
+                habit.getId(), habit.getTitle(), habit.getDuration().getLabel(), reward);
     }
 }

@@ -42,7 +42,7 @@ public class HabitController {
     @GetMapping("/rewards")
     public ResponseEntity<ApiResponse<HabitRewardListResponse>> getHabitRewards(
             @RequestParam(required = false) RewardStatus status,
-            @AuthenticationPrincipal Long userId){
+            @AuthenticationPrincipal Long userId) {
         HabitRewardListResponse rewards = habitService.getHabitRewards(userId, status);
         return ResponseEntity.ok(ApiResponse.success(rewards));
     }
@@ -50,8 +50,7 @@ public class HabitController {
     @Operation(summary = "보상 상세 조회")
     @GetMapping("{habitId}/rewards")
     public ResponseEntity<ApiResponse<HabitRewardDetailResponse>> getHabitRewardDetail(
-            @AuthenticationPrincipal Long userId,
-            @PathVariable Long habitId){
+            @AuthenticationPrincipal Long userId, @PathVariable Long habitId) {
         HabitRewardDetailResponse reward = habitService.getHabitRewardDetail(userId, habitId);
         return ResponseEntity.ok(ApiResponse.success(reward));
     }
@@ -72,7 +71,7 @@ public class HabitController {
     public ResponseEntity<ApiResponse<Void>> updateHabitRewardStatus(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long habitId,
-            @Valid @RequestBody HabitRewardUpdateRequest request){
+            @Valid @RequestBody HabitRewardUpdateRequest request) {
         habitService.updateHabitRewardStatus(userId, habitId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }

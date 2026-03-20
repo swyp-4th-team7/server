@@ -1,7 +1,6 @@
 package com.swyp.server.domain.habit.dto;
 
 import com.swyp.server.domain.habit.entity.Habit;
-
 import java.util.ArrayList;
 import java.util.List;
 

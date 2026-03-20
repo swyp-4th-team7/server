@@ -10,7 +10,6 @@ import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +54,7 @@ public class HabitService {
         List<Habit> habits = habitRepository.findAllByUserIdOrderByIsCompletedAscIdDesc(userId);
         return HabitListResponse.from(habits);
     }
+
     @Transactional(readOnly = true)
     public HabitRewardListResponse getHabitRewards(Long userId, RewardStatus status) {
         User user =
@@ -64,30 +64,33 @@ public class HabitService {
 
         List<Long> targetUserIds = new ArrayList<>();
 
-        if(user.getUserType() == UserType.CHILD){
+        if (user.getUserType() == UserType.CHILD) {
             targetUserIds.add(userId);
-        }
-        else{
+        } else {
             List<User> connectedMembers = familyRelationService.getConnectedMembers(userId);
-            List<Long> childIds = connectedMembers.stream()
-                    .filter(m -> m.getUserType() == UserType.CHILD)
-                    .map(User::getId)
-                    .toList();
+            List<Long> childIds =
+                    connectedMembers.stream()
+                            .filter(m -> m.getUserType() == UserType.CHILD)
+                            .map(User::getId)
+                            .toList();
 
             targetUserIds.addAll(childIds);
         }
 
-        if(targetUserIds.isEmpty()) return HabitRewardListResponse.empty();
+        if (targetUserIds.isEmpty()) return HabitRewardListResponse.empty();
 
-        List<Habit> habits = habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, status);
+        List<Habit> habits =
+                habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, status);
 
         return HabitRewardListResponse.from(habits);
     }
 
     @Transactional(readOnly = true)
     public HabitRewardDetailResponse getHabitRewardDetail(Long userId, Long habitId) {
-        Habit habit = habitRepository.findByIdAndUserId(habitId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+        Habit habit =
+                habitRepository
+                        .findByIdAndUserId(habitId, userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
         return HabitRewardDetailResponse.from(habit);
     }
 
@@ -123,23 +126,26 @@ public class HabitService {
     }
 
     @Transactional
-    public void updateHabitRewardStatus(Long userId, Long habitId, HabitRewardUpdateRequest request) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public void updateHabitRewardStatus(
+            Long userId, Long habitId, HabitRewardUpdateRequest request) {
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if(user.getUserType() == UserType.CHILD){
+        if (user.getUserType() == UserType.CHILD) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
-        Habit habit = habitRepository.findById(habitId)
-                .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+        Habit habit =
+                habitRepository
+                        .findById(habitId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
-        if(request.rewardStatus() == RewardStatus.COMPLETE){
+        if (request.rewardStatus() == RewardStatus.COMPLETE) {
             habit.updateRewardStatus(request.rewardStatus());
             habit.complete();
-        }
-        else{
+        } else {
             habit.updateRewardStatus(request.rewardStatus());
         }
     }
