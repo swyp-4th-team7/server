@@ -87,11 +87,12 @@ public class HabitService {
 
     @Transactional(readOnly = true)
     public HabitRewardDetailResponse getHabitRewardDetail(Long userId, Long habitId) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if(user.getUserType() == UserType.CHILD){
+        if (user.getUserType() == UserType.CHILD) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
@@ -100,15 +101,15 @@ public class HabitService {
                         .findById(habitId)
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
-
         List<User> connectedMembers = familyRelationService.getConnectedMembers(user.getId());
 
-        boolean isYourChild = connectedMembers.stream()
-                .map(User::getId)
-                .toList()
-                .contains(habit.getUser().getId());
+        boolean isYourChild =
+                connectedMembers.stream()
+                        .map(User::getId)
+                        .toList()
+                        .contains(habit.getUser().getId());
 
-        if(!isYourChild){
+        if (!isYourChild) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
@@ -166,15 +167,19 @@ public class HabitService {
 
         List<User> connectedMembers = familyRelationService.getConnectedMembers(user.getId());
 
-        boolean isYourChild = connectedMembers.stream()
-                .map(User::getId)
-                .toList()
-                .contains(habit.getUser().getId());
+        boolean isYourChild =
+                connectedMembers.stream()
+                        .map(User::getId)
+                        .toList()
+                        .contains(habit.getUser().getId());
 
-        if(!isYourChild){
+        if (!isYourChild) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
+        if(!habit.getReward().trim().equals(request.reward().trim())) {
+            habit.updateReward(request.reward());
+        }
         habit.updateRewardStatus(request.rewardStatus());
     }
 
