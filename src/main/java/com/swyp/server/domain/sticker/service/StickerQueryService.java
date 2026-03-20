@@ -108,14 +108,14 @@ public class StickerQueryService {
 
         int totalCompleted = allCompletedDates.size();
         int filledSlots = calculateFilledSlots(totalCompleted);
-        int boardNumber = (totalCompleted / BOARD_SIZE) + 1;
+        int currentBoard = totalCompleted / BOARD_SIZE;
+        int boardNumber = currentBoard + 1;
 
-        int boardStartIndex = (boardNumber - 1) * BOARD_SIZE;
+        int boardStartIndex = currentBoard * BOARD_SIZE;
         LocalDate boardStartDate =
-                allCompletedDates.isEmpty()
+                allCompletedDates.isEmpty() || boardStartIndex >= allCompletedDates.size()
                         ? null
-                        : allCompletedDates.get(
-                                Math.min(boardStartIndex, allCompletedDates.size() - 1));
+                        : allCompletedDates.get(boardStartIndex);
 
         return new ChildStickerResponse(
                 child.getId(),
@@ -123,6 +123,6 @@ public class StickerQueryService {
                 boardNumber,
                 filledSlots,
                 BOARD_SIZE,
-                boardStartDate);
+                ChildStickerResponse.formatStartDate(boardStartDate));
     }
 }
