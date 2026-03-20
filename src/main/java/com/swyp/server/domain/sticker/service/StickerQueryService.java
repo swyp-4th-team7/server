@@ -109,9 +109,11 @@ public class StickerQueryService {
         int totalCompleted = allCompletedDates.size();
         int filledSlots = calculateFilledSlots(totalCompleted);
         int currentBoard = totalCompleted / BOARD_SIZE;
-        int boardNumber = currentBoard + 1;
 
-        int boardStartIndex = currentBoard * BOARD_SIZE;
+        // 꽉 찬 경우 현재 판 유지, 아니면 +1
+        int boardNumber = (filledSlots == BOARD_SIZE) ? currentBoard : currentBoard + 1;
+
+        int boardStartIndex = (boardNumber - 1) * BOARD_SIZE;
         LocalDate boardStartDate =
                 allCompletedDates.isEmpty() || boardStartIndex >= allCompletedDates.size()
                         ? null
