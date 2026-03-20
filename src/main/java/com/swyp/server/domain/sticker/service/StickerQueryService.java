@@ -134,6 +134,8 @@ public class StickerQueryService {
                 filledSlots,
                 BOARD_SIZE,
                 ChildStickerResponse.formatStartDate(boardStartDate));
+    }
+
     private void validateWeekOffset(int weekOffset) {
         if (weekOffset < MIN_WEEK_OFFSET || weekOffset > MAX_WEEK_OFFSET) {
             throw new CustomException(ErrorCode.WEEK_OFFSET_INVALID);

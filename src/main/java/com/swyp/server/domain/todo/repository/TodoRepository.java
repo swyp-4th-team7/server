@@ -19,6 +19,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findAllByUserIdAndTodoDateBetween(
             Long userId, LocalDate startDate, LocalDate endDate);
 
+    List<Todo> findAllByUserIdInAndTodoDate(List<Long> userIds, LocalDate todoDate);
+
     @Modifying
     @Query(value = "DELETE FROM todos WHERE user_id = :userId", nativeQuery = true)
     void hardDeleteAllByUserId(@Param("userId") Long userId);

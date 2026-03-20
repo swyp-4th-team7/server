@@ -2,6 +2,8 @@ package com.swyp.server.domain.family.controller;
 
 import com.swyp.server.domain.family.dto.ConnectRequest;
 import com.swyp.server.domain.family.dto.ConnectedMembersResponse;
+import com.swyp.server.domain.family.dto.FamilyDashBoardResponse;
+import com.swyp.server.domain.family.service.FamilyRelationQueryService;
 import com.swyp.server.domain.family.service.FamilyRelationService;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.response.ApiResponse;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FamilyRelationController {
 
     private final FamilyRelationService familyRelationService;
+    private final FamilyRelationQueryService familyRelationQueryService;
 
     @Operation(summary = "초대코드로 사용자 연결")
     @PostMapping("/connect")
@@ -51,5 +54,13 @@ public class FamilyRelationController {
             @AuthenticationPrincipal Long userId, @PathVariable Long targetUserId) {
         familyRelationService.disconnect(userId, targetUserId);
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @Operation(summary = "연결된 사용자 할 일 및 습관 현황 요약 조회")
+    @GetMapping("/dashboard")
+    public ResponseEntity<ApiResponse<FamilyDashBoardResponse>> getDashBoard(
+            @AuthenticationPrincipal Long userId) {
+        FamilyDashBoardResponse response = familyRelationQueryService.getDashBoard(userId);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
