@@ -87,10 +87,31 @@ public class HabitService {
 
     @Transactional(readOnly = true)
     public HabitRewardDetailResponse getHabitRewardDetail(Long userId, Long habitId) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if(user.getUserType() == UserType.CHILD){
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
         Habit habit =
                 habitRepository
-                        .findByIdAndUserId(habitId, userId)
+                        .findById(habitId)
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+
+
+        List<User> connectedMembers = familyRelationService.getConnectedMembers(user.getId());
+
+        boolean isYourChild = connectedMembers.stream()
+                .map(User::getId)
+                .toList()
+                .contains(habit.getUser().getId());
+
+        if(!isYourChild){
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
         return HabitRewardDetailResponse.from(habit);
     }
 
@@ -141,6 +162,17 @@ public class HabitService {
                 habitRepository
                         .findById(habitId)
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+
+        List<User> connectedMembers = familyRelationService.getConnectedMembers(user.getId());
+
+        boolean isYourChild = connectedMembers.stream()
+                .map(User::getId)
+                .toList()
+                .contains(habit.getUser().getId());
+
+        if(!isYourChild){
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
 
         if (request.rewardStatus() == RewardStatus.COMPLETE) {
             habit.updateRewardStatus(request.rewardStatus());
