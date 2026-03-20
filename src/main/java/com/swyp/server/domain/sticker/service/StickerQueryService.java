@@ -1,13 +1,15 @@
 package com.swyp.server.domain.sticker.service;
 
-import com.swyp.server.domain.sticker.dto.DateStickerResponse;
-import com.swyp.server.domain.sticker.dto.StickerBoardResponse;
-import com.swyp.server.domain.sticker.dto.WeeklyStickerResponse;
+import com.swyp.server.domain.family.entity.FamilyRelation;
+import com.swyp.server.domain.family.repository.FamilyRelationRepository;
+import com.swyp.server.domain.sticker.dto.*;
 import com.swyp.server.domain.sticker.entity.UserStickerProgress;
 import com.swyp.server.domain.sticker.repository.UserStickerProgressRepository;
 import com.swyp.server.domain.todo.service.TodoService;
+import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.util.DateUtils;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class StickerQueryService {
 
     private final TodoService todoService;
     private final UserStickerProgressRepository progressRepository;
+    private final FamilyRelationRepository familyRelationRepository;
 
     public WeeklyStickerResponse getWeeklyStickers(Long userId, LocalDate today) {
         LocalDate startDate = DateUtils.getWeekStart(today);
@@ -83,5 +86,43 @@ public class StickerQueryService {
         int month = today.getMonthValue();
         int weekOfMonth = (today.getDayOfMonth() - 1) / 7 + 1;
         return month + "월 " + weekOfMonth + "주차";
+    }
+
+    public ChildrenStickerResponse getChildrenStickers(Long parentId) {
+        List<FamilyRelation> relations = familyRelationRepository.findAllByOwnerUserId(parentId);
+
+        List<ChildStickerResponse> children =
+                relations.stream()
+                        .map(relation -> buildChildStickerResponse(relation.getTargetUser()))
+                        .toList();
+
+        return new ChildrenStickerResponse(children);
+    }
+
+    private ChildStickerResponse buildChildStickerResponse(User child) {
+        LocalDate startDate = DateUtils.APPLICATION_LAUNCH_DATE;
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+
+        List<LocalDate> allCompletedDates =
+                todoService.getCompletedDates(child.getId(), startDate, today);
+
+        int totalCompleted = allCompletedDates.size();
+        int filledSlots = calculateFilledSlots(totalCompleted);
+        int boardNumber = (totalCompleted / BOARD_SIZE) + 1;
+
+        int boardStartIndex = (boardNumber - 1) * BOARD_SIZE;
+        LocalDate boardStartDate =
+                allCompletedDates.isEmpty()
+                        ? null
+                        : allCompletedDates.get(
+                                Math.min(boardStartIndex, allCompletedDates.size() - 1));
+
+        return new ChildStickerResponse(
+                child.getId(),
+                child.getNickname(),
+                boardNumber,
+                filledSlots,
+                BOARD_SIZE,
+                boardStartDate);
     }
 }

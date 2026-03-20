@@ -1,5 +1,6 @@
 package com.swyp.server.domain.sticker.controller;
 
+import com.swyp.server.domain.sticker.dto.ChildrenStickerResponse;
 import com.swyp.server.domain.sticker.dto.StickerBoardResponse;
 import com.swyp.server.domain.sticker.dto.WeeklyStickerResponse;
 import com.swyp.server.domain.sticker.service.StickerQueryService;
@@ -50,5 +51,13 @@ public class StickerController {
             @AuthenticationPrincipal Long userId) {
         stickerService.confirmStickerBoard(userId);
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @Operation(summary = "부모용 자녀 스티커 현황 조회")
+    @GetMapping("/children")
+    public ResponseEntity<ApiResponse<ChildrenStickerResponse>> getChildrenStickers(
+            @AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(
+                ApiResponse.success(stickerQueryService.getChildrenStickers(userId)));
     }
 }
