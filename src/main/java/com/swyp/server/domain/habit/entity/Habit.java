@@ -69,4 +69,6 @@ public class Habit extends SoftDeletableEntity {
     public void incomplete() {
         this.isCompleted = false;
     }
+
+    public void updateRewardStatus(RewardStatus rewardStatus) {this.status = rewardStatus;}
 }

@@ -47,6 +47,15 @@ public class HabitController {
         return ResponseEntity.ok(ApiResponse.success(rewards));
     }
 
+    @Operation(summary = "보상 상세 조회")
+    @GetMapping("{habitId}/rewards")
+    public ResponseEntity<ApiResponse<HabitRewardDetailResponse>> getHabitRewardDetail(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long habitId){
+        HabitRewardDetailResponse reward = habitService.getHabitRewardDetail(userId, habitId);
+        return ResponseEntity.ok(ApiResponse.success(reward));
+    }
+
     @Operation(summary = "습관 수정")
     @PatchMapping("/{habitId}")
     public ResponseEntity<ApiResponse<Void>> updateHabit(
@@ -58,12 +67,15 @@ public class HabitController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-//    @Operation(summary = "보상 상태 수정")
-//    @PatchMapping("/{habitId}/status")
-//    public ResponseEntity<ApiResponse<Void>> updateHabitRewardStatus(
-//            @AuthenticationPrincipal Long userId){
-//
-//    }
+    @Operation(summary = "보상 상태 수정")
+    @PatchMapping("/{habitId}/status")
+    public ResponseEntity<ApiResponse<Void>> updateHabitRewardStatus(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long habitId,
+            @Valid @RequestBody HabitRewardUpdateRequest request){
+        habitService.updateHabitRewardStatus(userId, habitId, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 
     @Operation(summary = "습관 삭제")
     @DeleteMapping("/{habitId}")

@@ -84,6 +84,13 @@ public class HabitService {
         return HabitRewardListResponse.from(habits);
     }
 
+    @Transactional(readOnly = true)
+    public HabitRewardDetailResponse getHabitRewardDetail(Long userId, Long habitId) {
+        Habit habit = habitRepository.findByIdAndUserId(habitId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+        return HabitRewardDetailResponse.from(habit);
+    }
+
     @Transactional
     public void updateHabit(Long userId, Long habitId, HabitUpdateRequest request) {
         User user =
@@ -112,6 +119,28 @@ public class HabitService {
             habit.complete();
         } else {
             habit.incomplete();
+        }
+    }
+
+    @Transactional
+    public void updateHabitRewardStatus(Long userId, Long habitId, HabitRewardUpdateRequest request) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if(user.getUserType() == UserType.CHILD){
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        Habit habit = habitRepository.findById(habitId)
+                .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+
+        if(request.rewardStatus() == RewardStatus.COMPLETE){
+            habit.updateRewardStatus(request.rewardStatus());
+            habit.complete();
+        }
+        else{
+            habit.updateRewardStatus(request.rewardStatus());
         }
     }
 

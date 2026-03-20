@@ -68,6 +68,7 @@ public enum ErrorCode {
     HABIT_DURATION_REQUIRED(40021, 400, "습관 기간 설정은 필수입니다."),
     HABIT_REWARD_REQUIRED(40022, 400, "습관 보상 설정은 필수입니다."),
     HABIT_COMPLETED_REQUIRED(40023, 400, "습관 완료 여부는 필수입니다."),
+    REWARD_STATUS_REQUIRED(40025,400, "보상 상태는 필수입니다."),
 
     INVITE_CODE_REQUIRED(40015, 400, "초대 코드는 필수입니다."),
     WEEK_OFFSET_INVALID(40024, 400, "weekOffset은 -52 이상 52 이하여야 합니다.");
