@@ -1,15 +1,17 @@
 package com.swyp.server.domain.habit.service;
 
-import com.swyp.server.domain.habit.dto.HabitCreateRequest;
-import com.swyp.server.domain.habit.dto.HabitListResponse;
-import com.swyp.server.domain.habit.dto.HabitUpdateRequest;
+import com.swyp.server.domain.family.service.FamilyRelationService;
+import com.swyp.server.domain.habit.dto.*;
 import com.swyp.server.domain.habit.entity.Habit;
+import com.swyp.server.domain.habit.entity.RewardStatus;
 import com.swyp.server.domain.habit.repository.HabitRepository;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class HabitService {
+    private final FamilyRelationService familyRelationService;
     private final HabitRepository habitRepository;
     private final UserRepository userRepository;
 
@@ -51,6 +54,34 @@ public class HabitService {
     public HabitListResponse getHabits(Long userId) {
         List<Habit> habits = habitRepository.findAllByUserIdOrderByIsCompletedAscIdDesc(userId);
         return HabitListResponse.from(habits);
+    }
+    @Transactional(readOnly = true)
+    public HabitRewardListResponse getHabitRewards(Long userId, RewardStatus status) {
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<Long> targetUserIds = new ArrayList<>();
+
+        if(user.getUserType() == UserType.CHILD){
+            targetUserIds.add(userId);
+        }
+        else{
+            List<User> connectedMembers = familyRelationService.getConnectedMembers(userId);
+            List<Long> childIds = connectedMembers.stream()
+                    .filter(m -> m.getUserType() == UserType.CHILD)
+                    .map(User::getId)
+                    .toList();
+
+            targetUserIds.addAll(childIds);
+        }
+
+        if(targetUserIds.isEmpty()) return HabitRewardListResponse.empty();
+
+        List<Habit> habits = habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, status);
+
+        return HabitRewardListResponse.from(habits);
     }
 
     @Transactional

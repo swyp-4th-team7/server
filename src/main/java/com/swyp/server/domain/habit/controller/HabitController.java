@@ -2,6 +2,7 @@ package com.swyp.server.domain.habit.controller;
 
 import com.swyp.server.domain.habit.dto.*;
 import com.swyp.server.domain.habit.entity.Habit;
+import com.swyp.server.domain.habit.entity.RewardStatus;
 import com.swyp.server.domain.habit.service.HabitService;
 import com.swyp.server.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +38,15 @@ public class HabitController {
         return ResponseEntity.ok(ApiResponse.success(habits));
     }
 
+    @Operation(summary = "보상 조회")
+    @GetMapping("/rewards")
+    public ResponseEntity<ApiResponse<HabitRewardListResponse>> getHabitRewards(
+            @RequestParam(required = false) RewardStatus status,
+            @AuthenticationPrincipal Long userId){
+        HabitRewardListResponse rewards = habitService.getHabitRewards(userId, status);
+        return ResponseEntity.ok(ApiResponse.success(rewards));
+    }
+
     @Operation(summary = "습관 수정")
     @PatchMapping("/{habitId}")
     public ResponseEntity<ApiResponse<Void>> updateHabit(
@@ -47,6 +57,13 @@ public class HabitController {
         habitService.updateHabit(userId, habitId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+//    @Operation(summary = "보상 상태 수정")
+//    @PatchMapping("/{habitId}/status")
+//    public ResponseEntity<ApiResponse<Void>> updateHabitRewardStatus(
+//            @AuthenticationPrincipal Long userId){
+//
+//    }
 
     @Operation(summary = "습관 삭제")
     @DeleteMapping("/{habitId}")
