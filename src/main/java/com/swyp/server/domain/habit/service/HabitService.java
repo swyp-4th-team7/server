@@ -141,6 +141,7 @@ public class HabitService {
 
         if (request.isCompleted()) {
             habit.complete();
+            habit.updateRewardStatus(RewardStatus.COMPLETE);
         } else {
             habit.incomplete();
         }
@@ -174,12 +175,7 @@ public class HabitService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
-        if (request.rewardStatus() == RewardStatus.COMPLETE) {
-            habit.updateRewardStatus(request.rewardStatus());
-            habit.complete();
-        } else {
-            habit.updateRewardStatus(request.rewardStatus());
-        }
+        habit.updateRewardStatus(request.rewardStatus());
     }
 
     @Transactional
