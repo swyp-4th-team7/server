@@ -36,13 +36,18 @@ public class Habit extends SoftDeletableEntity {
     @Column(nullable = false)
     private boolean isCompleted;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RewardStatus status;
+
     @Builder
     public Habit(User user, String title, HabitDuration duration, String reward) {
         this.user = user;
         this.title = title;
         this.duration = duration;
         this.reward = reward;
-        isCompleted = false;
+        this.isCompleted = false;
+        this.status = RewardStatus.REWARD_CHECKING;
     }
 
     public void updateTitle(String title) {
@@ -63,5 +68,9 @@ public class Habit extends SoftDeletableEntity {
 
     public void incomplete() {
         this.isCompleted = false;
+    }
+
+    public void updateRewardStatus(RewardStatus rewardStatus) {
+        this.status = rewardStatus;
     }
 }

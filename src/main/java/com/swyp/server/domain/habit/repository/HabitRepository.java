@@ -1,6 +1,7 @@
 package com.swyp.server.domain.habit.repository;
 
 import com.swyp.server.domain.habit.entity.Habit;
+import com.swyp.server.domain.habit.entity.RewardStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -16,6 +17,18 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
 
     @EntityGraph(attributePaths = "user")
     List<Habit> findAllByUserIdOrderByIsCompletedAscIdDesc(Long userId);
+
+    @EntityGraph(attributePaths = "user")
+    List<Habit> findAllByUserIdAndStatusOrderByIsCompletedAscIdDesc(
+            Long userId, RewardStatus status);
+
+    @Query(
+            "SELECT h FROM Habit h "
+                    + "WHERE h.user.id IN :userIds "
+                    + "AND (:status IS NULL OR h.status = :status) "
+                    + "ORDER BY h.isCompleted ASC, h.id DESC")
+    List<Habit> findAllByUserIdsAndStatusOptional(
+            @Param("userIds") List<Long> userIds, @Param("status") RewardStatus status);
 
     // 미완료 습관이 있는 유저 ID 조회
     @Query(
