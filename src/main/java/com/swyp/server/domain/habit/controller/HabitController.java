@@ -48,7 +48,7 @@ public class HabitController {
     }
 
     @Operation(summary = "보상 상세 조회")
-    @GetMapping("{habitId}/rewards")
+    @GetMapping("/{habitId}/rewards")
     public ResponseEntity<ApiResponse<HabitRewardDetailResponse>> getHabitRewardDetail(
             @AuthenticationPrincipal Long userId, @PathVariable Long habitId) {
         HabitRewardDetailResponse reward = habitService.getHabitRewardDetail(userId, habitId);
