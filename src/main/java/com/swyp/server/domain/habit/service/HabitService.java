@@ -202,7 +202,8 @@ public class HabitService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
-        if (!habit.getReward().trim().equals(request.reward().trim())) {
+        if (habit.getReward() != null
+                && !habit.getReward().trim().equals(request.reward().trim())) {
             habit.updateReward(request.reward());
         }
 
