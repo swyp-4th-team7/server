@@ -10,11 +10,15 @@ import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
+import com.swyp.server.global.notification.NotificationService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class HabitService {
     private final FamilyRelationService familyRelationService;
     private final HabitRepository habitRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public Habit createHabit(Long userId, HabitCreateRequest request) {
@@ -46,7 +51,27 @@ public class HabitService {
                         .reward(reward)
                         .build();
 
-        return habitRepository.save(habit);
+        Habit savedHabit = habitRepository.save(habit);
+
+        if (user.getUserType() == UserType.CHILD) {
+            List<Long> parentIds =
+                    familyRelationService.getConnectedMembers(userId).stream()
+                            .filter(m -> m.getUserType() == UserType.PARENT)
+                            .map(User::getId)
+                            .toList();
+            if (!parentIds.isEmpty()) {
+                TransactionSynchronizationManager.registerSynchronization(
+                        new TransactionSynchronization() {
+                            @Override
+                            public void afterCommit() {
+                                notificationService.sendToUsers(
+                                        parentIds, "해봄", "새로운 보상이 추가됐어요! 지금 바로 수락해 볼까요?", Map.of());
+                            }
+                        });
+            }
+        }
+
+        return savedHabit;
     }
 
     @Transactional(readOnly = true)
@@ -177,10 +202,26 @@ public class HabitService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
-        if(!habit.getReward().trim().equals(request.reward().trim())) {
+        if (habit.getReward() != null
+                && !habit.getReward().trim().equals(request.reward().trim())) {
             habit.updateReward(request.reward());
         }
+
+        RewardStatus previousStatus = habit.getStatus();
         habit.updateRewardStatus(request.rewardStatus());
+
+        if (previousStatus != RewardStatus.IN_PROGRESS
+                && request.rewardStatus() == RewardStatus.IN_PROGRESS) {
+            Long childId = habit.getUser().getId();
+            TransactionSynchronizationManager.registerSynchronization(
+                    new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                            notificationService.sendToUser(
+                                    childId, "해봄", "부모님이 보상을 허락해 주셨어요. 보상을 받을 때까지 파이팅!", Map.of());
+                        }
+                    });
+        }
     }
 
     @Transactional
