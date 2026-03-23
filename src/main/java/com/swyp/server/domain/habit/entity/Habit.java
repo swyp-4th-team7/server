@@ -3,6 +3,7 @@ package com.swyp.server.domain.habit.entity;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.SoftDeletableEntity;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +41,9 @@ public class Habit extends SoftDeletableEntity {
     @Column(nullable = false)
     private RewardStatus status;
 
+    @Column(nullable = false)
+    private LocalDateTime expiredAt;
+
     @Builder
     public Habit(User user, String title, HabitDuration duration, String reward) {
         this.user = user;
@@ -48,6 +52,7 @@ public class Habit extends SoftDeletableEntity {
         this.reward = reward;
         this.isCompleted = false;
         this.status = RewardStatus.REWARD_CHECKING;
+        this.expiredAt = LocalDateTime.now().plusDays(duration.getDays());
     }
 
     public void updateTitle(String title) {
@@ -56,6 +61,7 @@ public class Habit extends SoftDeletableEntity {
 
     public void updateDuration(HabitDuration duration) {
         this.duration = duration;
+        this.expiredAt = this.getCreatedAt().plusDays(duration.getDays());
     }
 
     public void updateReward(String reward) {
