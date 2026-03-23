@@ -21,6 +21,7 @@ public enum ErrorCode {
     // User
     USER_NOT_FOUND(40401, 404, "사용자를 찾을 수 없습니다."),
     DUPLICATE_EMAIL(40901, 409, "이미 사용 중인 이메일입니다."),
+    PROFILE_NOT_COMPLETED(40026, 400, "프로필 설정 완료 후 이용할 수 있습니다."),
 
     // Todos
     TODO_NOT_FOUND(40402, 404, "할 일을 찾을 수 없습니다."),

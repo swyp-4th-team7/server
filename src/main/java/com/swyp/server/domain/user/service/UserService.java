@@ -1,6 +1,7 @@
 package com.swyp.server.domain.user.service;
 
 import com.swyp.server.domain.auth.repository.RefreshTokenRepository;
+import com.swyp.server.domain.user.dto.InviteCodeResponse;
 import com.swyp.server.domain.user.dto.UserResponse;
 import com.swyp.server.domain.user.entity.Role;
 import com.swyp.server.domain.user.entity.User;
@@ -58,6 +59,19 @@ public class UserService {
                         .findById(userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         return UserResponse.from(user);
+    }
+
+    @Transactional(readOnly = true)
+    public InviteCodeResponse getInviteCode(Long userId) {
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (!user.isProfileCompleted()) {
+            throw new CustomException(ErrorCode.PROFILE_NOT_COMPLETED);
+        }
+        return InviteCodeResponse.from(user);
     }
 
     @Transactional
