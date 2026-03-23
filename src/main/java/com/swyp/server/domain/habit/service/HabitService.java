@@ -107,7 +107,7 @@ public class HabitService {
         List<Habit> habits =
                 habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, status);
 
-        return HabitRewardListResponse.from(habits);
+        return HabitRewardListResponse.from(habits, user.getUserType());
     }
 
     @Transactional(readOnly = true)

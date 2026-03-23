@@ -11,15 +11,15 @@ public record HabitRewardResponse(
         String reward,
         boolean isCompleted,
         String status) {
-    public static HabitRewardResponse from(Habit habit) {
+    public static HabitRewardResponse from(Habit habit, UserType viewerType) {
 
         String reward =
                 (habit.getUser().getUserType() == (UserType.PARENT)) ? null : habit.getReward();
 
         String nickname =
-                (habit.getUser().getUserType() == (UserType.CHILD))
-                        ? null
-                        : habit.getUser().getNickname();
+                (viewerType == (UserType.PARENT))
+                        ? habit.getUser().getNickname()
+                        : null;
 
         return new HabitRewardResponse(
                 habit.getId(),

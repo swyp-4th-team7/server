@@ -22,6 +22,7 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
     List<Habit> findAllByUserIdAndStatusOrderByIsCompletedAscIdDesc(
             Long userId, RewardStatus status);
 
+    @EntityGraph(attributePaths = "user")
     @Query(
             "SELECT h FROM Habit h "
                     + "WHERE h.user.id IN :userIds "
