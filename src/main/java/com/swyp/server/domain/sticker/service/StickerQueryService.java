@@ -67,13 +67,20 @@ public class StickerQueryService {
                         .map(UserStickerProgress::getLastConfirmedCompletedDateCount)
                         .orElse(0);
 
-        int filledSlots = calculateFilledSlots(totalCompleted);
-
-        int currentBoard = totalCompleted / BOARD_SIZE;
-        int confirmedBoard = confirmedCount / BOARD_SIZE;
-        boolean showPopup = shouldShowPopup(filledSlots, currentBoard, confirmedBoard);
+        int filledSlots = calculateFilledSlots(totalCompleted, confirmedCount);
+        boolean showPopup = shouldShowPopup(totalCompleted, confirmedCount);
 
         return new StickerBoardResponse(BOARD_SIZE, filledSlots, showPopup);
+    }
+
+    private int calculateFilledSlots(int totalCompleted, int confirmedCount) {
+        int currentCompleted = totalCompleted - confirmedCount;
+        if (currentCompleted <= 0) {
+            return 0;
+        }
+
+        int remain = currentCompleted % BOARD_SIZE;
+        return remain == 0 ? BOARD_SIZE : remain;
     }
 
     private int calculateFilledSlots(int totalCompleted) {
@@ -85,9 +92,9 @@ public class StickerQueryService {
         return remain == 0 ? BOARD_SIZE : remain;
     }
 
-    private boolean shouldShowPopup(int filledSlots, int currentBoard, int confirmedBoard) {
-
-        return filledSlots == BOARD_SIZE && currentBoard > confirmedBoard;
+    private boolean shouldShowPopup(int totalCompleted, int confirmedCount) {
+        int currentCompleted = totalCompleted - confirmedCount;
+        return currentCompleted >= BOARD_SIZE;
     }
 
     private String createWeekLabel(LocalDate targetDate) {
