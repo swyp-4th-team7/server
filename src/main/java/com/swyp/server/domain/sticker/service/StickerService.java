@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StickerService {
 
+    private static final int BOARD_SIZE = 30;
+
     private final TodoService todoService;
     private final UserRepository userRepository;
     private final UserStickerProgressRepository progressRepository;
@@ -24,7 +26,11 @@ public class StickerService {
         UserStickerProgress progress =
                 progressRepository.findByUserId(userId).orElseGet(() -> createProgress(userId));
 
-        progress.confirmBoard(totalCompleted);
+        int confirmedCount = progress.getLastConfirmedCompletedDateCount();
+        int currentCompleted = totalCompleted - confirmedCount;
+        int confirmTarget = confirmedCount + (currentCompleted / BOARD_SIZE) * BOARD_SIZE;
+
+        progress.confirmBoard(confirmTarget);
     }
 
     private UserStickerProgress createProgress(Long userId) {
