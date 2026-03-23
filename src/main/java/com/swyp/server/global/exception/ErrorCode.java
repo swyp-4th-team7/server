@@ -62,6 +62,7 @@ public enum ErrorCode {
     SCHEDULE_DATE_REQUIRED(40017, 400, "일정 날짜는 필수입니다."),
 
     // Habit
+    GET_REWARD_DETAIL_FORBIDDEN(40301,403,"보상 상세 정보를 확인할 수 없는 상태입니다."),
     HABIT_NOT_FOUND(40406, 404, "습관을 찾을 수 없습니다."),
 
     HABIT_TITLE_REQUIRED(40020, 400, "습관 제목은 필수입니다."),
