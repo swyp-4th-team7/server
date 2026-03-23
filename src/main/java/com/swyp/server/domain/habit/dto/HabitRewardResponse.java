@@ -16,10 +16,7 @@ public record HabitRewardResponse(
         String reward =
                 (habit.getUser().getUserType() == (UserType.PARENT)) ? null : habit.getReward();
 
-        String nickname =
-                (viewerType == (UserType.PARENT))
-                        ? habit.getUser().getNickname()
-                        : null;
+        String nickname = (viewerType == (UserType.PARENT)) ? habit.getUser().getNickname() : null;
 
         return new HabitRewardResponse(
                 habit.getId(),

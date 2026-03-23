@@ -126,7 +126,8 @@ public class HabitService {
                         .findById(habitId)
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
-        if(habit.getStatus() == RewardStatus.IN_PROGRESS || habit.getStatus() == RewardStatus.COMPLETE){
+        if (habit.getStatus() == RewardStatus.IN_PROGRESS
+                || habit.getStatus() == RewardStatus.COMPLETE) {
             throw new CustomException(ErrorCode.GET_REWARD_DETAIL_FORBIDDEN);
         }
 
