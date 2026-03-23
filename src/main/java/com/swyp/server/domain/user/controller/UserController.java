@@ -1,5 +1,6 @@
 package com.swyp.server.domain.user.controller;
 
+import com.swyp.server.domain.user.dto.InviteCodeResponse;
 import com.swyp.server.domain.user.dto.ProfileRequest;
 import com.swyp.server.domain.user.dto.UserResponse;
 import com.swyp.server.domain.user.service.UserService;
@@ -46,5 +47,12 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> agreeToTerms(@AuthenticationPrincipal Long userId) {
         userService.agreeToTerms(userId);
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @Operation(summary = "내 초대 코드 확인")
+    @GetMapping("me/invite-code")
+    public ResponseEntity<ApiResponse<InviteCodeResponse>> getInviteCode(
+            @AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(ApiResponse.success(userService.getInviteCode(userId)));
     }
 }
