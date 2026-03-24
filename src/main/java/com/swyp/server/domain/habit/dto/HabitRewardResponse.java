@@ -1,6 +1,7 @@
 package com.swyp.server.domain.habit.dto;
 
 import com.swyp.server.domain.habit.entity.Habit;
+import com.swyp.server.domain.habit.entity.HabitDuration;
 import com.swyp.server.domain.habit.entity.RewardStatus;
 import com.swyp.server.domain.user.entity.UserType;
 
@@ -8,7 +9,7 @@ public record HabitRewardResponse(
         Long habitId,
         String title,
         String nickname,
-        String duration,
+        HabitDuration duration,
         String reward,
         boolean isCompleted,
         RewardStatus status) {
@@ -23,7 +24,7 @@ public record HabitRewardResponse(
                 habit.getId(),
                 habit.getTitle(),
                 nickname,
-                habit.getDuration().getLabel(),
+                habit.getDuration(),
                 reward,
                 habit.isCompleted(),
                 habit.getStatus());

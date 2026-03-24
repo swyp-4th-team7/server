@@ -13,10 +13,6 @@ public record HabitResponse(
                 (habit.getUser().getUserType().equals(UserType.PARENT)) ? null : habit.getReward();
 
         return new HabitResponse(
-                habit.getId(),
-                habit.getTitle(),
-                habit.getDuration(),
-                reward,
-                habit.isCompleted());
+                habit.getId(), habit.getTitle(), habit.getDuration(), reward, habit.isCompleted());
     }
 }
