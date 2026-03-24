@@ -104,8 +104,10 @@ public class HabitService {
 
         if (targetUserIds.isEmpty()) return HabitRewardListResponse.empty();
 
+        RewardStatus filteredStatus = status.isAll() ? null : status;
+
         List<Habit> habits =
-                habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, status);
+                habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, filteredStatus);
 
         return HabitRewardListResponse.from(habits, user.getUserType());
     }
@@ -214,7 +216,6 @@ public class HabitService {
         RewardStatus previousStatus = habit.getStatus();
 
         if (previousStatus != RewardStatus.REWARD_CHECKING) {
-            // 이미 IN_PROGRESS거나 다른 상태라면 즉시 에러 발생!
             throw new CustomException(ErrorCode.INVALID_HABIT_STATUS);
         }
 
