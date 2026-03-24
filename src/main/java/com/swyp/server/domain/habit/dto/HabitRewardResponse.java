@@ -14,9 +14,6 @@ public record HabitRewardResponse(
         RewardStatus status) {
     public static HabitRewardResponse from(Habit habit, UserType viewerType) {
 
-        String reward =
-                (habit.getUser().getUserType() == (UserType.PARENT)) ? null : habit.getReward();
-
         String nickname = (viewerType == (UserType.PARENT)) ? habit.getUser().getNickname() : null;
 
         return new HabitRewardResponse(
@@ -24,7 +21,7 @@ public record HabitRewardResponse(
                 habit.getTitle(),
                 nickname,
                 habit.getDuration(),
-                reward,
+                habit.getReward(),
                 habit.getStatus());
     }
 }
