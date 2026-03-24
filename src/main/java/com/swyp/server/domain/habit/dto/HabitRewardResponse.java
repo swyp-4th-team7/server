@@ -1,6 +1,7 @@
 package com.swyp.server.domain.habit.dto;
 
 import com.swyp.server.domain.habit.entity.Habit;
+import com.swyp.server.domain.habit.entity.RewardStatus;
 import com.swyp.server.domain.user.entity.UserType;
 
 public record HabitRewardResponse(
@@ -10,7 +11,7 @@ public record HabitRewardResponse(
         String duration,
         String reward,
         boolean isCompleted,
-        String status) {
+        RewardStatus status) {
     public static HabitRewardResponse from(Habit habit, UserType viewerType) {
 
         String reward =
@@ -25,6 +26,6 @@ public record HabitRewardResponse(
                 habit.getDuration().getLabel(),
                 reward,
                 habit.isCompleted(),
-                habit.getStatus().getLabel());
+                habit.getStatus());
     }
 }

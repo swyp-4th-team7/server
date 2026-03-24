@@ -1,10 +1,11 @@
 package com.swyp.server.domain.habit.dto;
 
 import com.swyp.server.domain.habit.entity.Habit;
+import com.swyp.server.domain.habit.entity.HabitDuration;
 import com.swyp.server.domain.user.entity.UserType;
 
 public record HabitResponse(
-        Long habitId, String title, String duration, String reward, boolean isCompleted) {
+        Long habitId, String title, HabitDuration duration, String reward, boolean isCompleted) {
 
     public static HabitResponse from(Habit habit) {
 
@@ -14,7 +15,7 @@ public record HabitResponse(
         return new HabitResponse(
                 habit.getId(),
                 habit.getTitle(),
-                habit.getDuration().getLabel(),
+                habit.getDuration(),
                 reward,
                 habit.isCompleted());
     }
