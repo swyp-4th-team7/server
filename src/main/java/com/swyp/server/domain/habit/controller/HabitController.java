@@ -41,8 +41,7 @@ public class HabitController {
     @Operation(summary = "보상 조회")
     @GetMapping("/rewards")
     public ResponseEntity<ApiResponse<HabitRewardListResponse>> getHabitRewards(
-            @RequestParam RewardStatus status,
-            @AuthenticationPrincipal Long userId) {
+            @RequestParam RewardStatus status, @AuthenticationPrincipal Long userId) {
         HabitRewardListResponse rewards = habitService.getHabitRewards(userId, status);
         return ResponseEntity.ok(ApiResponse.success(rewards));
     }
