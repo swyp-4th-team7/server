@@ -28,6 +28,14 @@ public class ScheduleService {
 
     @Transactional
     public Schedule createSchedule(Long userId, ScheduleCreateRequest request) {
+        LocalDate today = LocalDate.now(SEOUL_ZONE);
+        if (request.scheduleDate().isBefore(today)) {
+            throw new CustomException(ErrorCode.SCHEDULE_DATE_PAST);
+        }
+        if (request.scheduleDate().isAfter(today.plusYears(5))) {
+            throw new CustomException(ErrorCode.SCHEDULE_DATE_TOO_FAR);
+        }
+
         User user =
                 userRepository
                         .findById(userId)
@@ -66,6 +74,13 @@ public class ScheduleService {
             schedule.updateCategory(request.category());
         }
         if (request.scheduleDate() != null) {
+            LocalDate today = LocalDate.now(SEOUL_ZONE);
+            if (request.scheduleDate().isBefore(today)) {
+                throw new CustomException(ErrorCode.SCHEDULE_DATE_PAST);
+            }
+            if (request.scheduleDate().isAfter(today.plusYears(5))) {
+                throw new CustomException(ErrorCode.SCHEDULE_DATE_TOO_FAR);
+            }
             schedule.updateScheduleDate(request.scheduleDate());
         }
     }
