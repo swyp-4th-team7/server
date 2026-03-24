@@ -11,7 +11,6 @@ public record HabitRewardResponse(
         String nickname,
         HabitDuration duration,
         String reward,
-        boolean isCompleted,
         RewardStatus status) {
     public static HabitRewardResponse from(Habit habit, UserType viewerType) {
 
@@ -26,7 +25,6 @@ public record HabitRewardResponse(
                 nickname,
                 habit.getDuration(),
                 reward,
-                habit.isCompleted(),
                 habit.getStatus());
     }
 }
