@@ -79,8 +79,10 @@ public class StickerQueryService {
             return 0;
         }
 
-        int remain = currentCompleted % BOARD_SIZE;
-        return remain == 0 ? BOARD_SIZE : remain;
+        if (currentCompleted >= BOARD_SIZE) {
+            return BOARD_SIZE;
+        }
+        return currentCompleted;
     }
 
     private int calculateFilledSlots(int totalCompleted) {
