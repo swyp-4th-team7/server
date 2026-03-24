@@ -39,6 +39,10 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
                     + "AND h.expiredAt < :now")
     void updateExpiredHabitsStatus(@Param("now") LocalDateTime now);
 
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Habit h SET h.isCompleted = false " + "WHERE h.isCompleted = true")
+    void resetAllHabits();
+
     // 미완료 습관이 있는 유저 ID 조회
     @Query(
             "SELECT DISTINCT h.user.id FROM Habit h WHERE h.user.id IN :userIds AND h.isCompleted = false")
