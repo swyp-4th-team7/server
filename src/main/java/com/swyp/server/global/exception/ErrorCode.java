@@ -63,6 +63,7 @@ public enum ErrorCode {
     SCHEDULE_DATE_REQUIRED(40017, 400, "일정 날짜는 필수입니다."),
 
     // Habit
+    GET_REWARD_DETAIL_FORBIDDEN(40301, 403, "보상 상세 정보를 확인할 수 없는 상태입니다."),
     HABIT_NOT_FOUND(40406, 404, "습관을 찾을 수 없습니다."),
 
     HABIT_TITLE_REQUIRED(40020, 400, "습관 제목은 필수입니다."),
@@ -70,6 +71,7 @@ public enum ErrorCode {
     HABIT_REWARD_REQUIRED(40022, 400, "습관 보상 설정은 필수입니다."),
     HABIT_COMPLETED_REQUIRED(40023, 400, "습관 완료 여부는 필수입니다."),
     REWARD_STATUS_REQUIRED(40025, 400, "보상 상태는 필수입니다."),
+    INVALID_HABIT_STATUS(40026, 400, "보상 진행 상황을 변경할 수 없습니다."),
 
     INVITE_CODE_REQUIRED(40015, 400, "초대 코드는 필수입니다."),
     WEEK_OFFSET_INVALID(40024, 400, "weekOffset은 -52 이상 52 이하여야 합니다.");

@@ -107,7 +107,7 @@ public class HabitService {
         List<Habit> habits =
                 habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, status);
 
-        return HabitRewardListResponse.from(habits);
+        return HabitRewardListResponse.from(habits, user.getUserType());
     }
 
     @Transactional(readOnly = true)
@@ -125,6 +125,11 @@ public class HabitService {
                 habitRepository
                         .findById(habitId)
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+
+        if (habit.getStatus() == RewardStatus.IN_PROGRESS
+                || habit.getStatus() == RewardStatus.COMPLETE) {
+            throw new CustomException(ErrorCode.GET_REWARD_DETAIL_FORBIDDEN);
+        }
 
         List<User> connectedMembers = familyRelationService.getConnectedMembers(user.getId());
 
@@ -167,14 +172,13 @@ public class HabitService {
 
         if (request.isCompleted()) {
             habit.complete();
-            habit.updateRewardStatus(RewardStatus.REWARD_WAITING);
         } else {
             habit.incomplete();
         }
     }
 
     @Transactional
-    public void updateHabitRewardStatus(
+    public void updateHabitRewardStatusToInProgress(
             Long userId, Long habitId, HabitRewardUpdateRequest request) {
         User user =
                 userRepository
@@ -208,20 +212,58 @@ public class HabitService {
         }
 
         RewardStatus previousStatus = habit.getStatus();
-        habit.updateRewardStatus(request.rewardStatus());
 
-        if (previousStatus != RewardStatus.IN_PROGRESS
-                && request.rewardStatus() == RewardStatus.IN_PROGRESS) {
-            Long childId = habit.getUser().getId();
-            TransactionSynchronizationManager.registerSynchronization(
-                    new TransactionSynchronization() {
-                        @Override
-                        public void afterCommit() {
-                            notificationService.sendToUser(
-                                    childId, "해봄", "부모님이 보상을 허락해 주셨어요. 보상을 받을 때까지 파이팅!", Map.of());
-                        }
-                    });
+        if (previousStatus != RewardStatus.REWARD_CHECKING) {
+            // 이미 IN_PROGRESS거나 다른 상태라면 즉시 에러 발생!
+            throw new CustomException(ErrorCode.INVALID_HABIT_STATUS);
         }
+
+        habit.updateRewardStatus(RewardStatus.IN_PROGRESS);
+
+        Long childId = habit.getUser().getId();
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        notificationService.sendToUser(
+                                childId, "해봄", "부모님이 보상을 허락해 주셨어요. 보상을 받을 때까지 파이팅!", Map.of());
+                    }
+                });
+    }
+
+    @Transactional
+    public void updateHabitRewardStatusToComplete(Long userId, Long habitId) {
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (user.getUserType() == UserType.CHILD) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        Habit habit =
+                habitRepository
+                        .findById(habitId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+
+        List<User> connectedMembers = familyRelationService.getConnectedMembers(user.getId());
+
+        boolean isYourChild =
+                connectedMembers.stream()
+                        .map(User::getId)
+                        .toList()
+                        .contains(habit.getUser().getId());
+
+        if (!isYourChild) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        if (habit.getStatus() != RewardStatus.REWARD_WAITING) {
+            throw new CustomException(ErrorCode.INVALID_HABIT_STATUS);
+        }
+
+        habit.updateRewardStatus(RewardStatus.COMPLETE);
     }
 
     @Transactional

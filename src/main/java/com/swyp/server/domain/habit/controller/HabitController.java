@@ -41,8 +41,7 @@ public class HabitController {
     @Operation(summary = "보상 조회")
     @GetMapping("/rewards")
     public ResponseEntity<ApiResponse<HabitRewardListResponse>> getHabitRewards(
-            @RequestParam(required = false) RewardStatus status,
-            @AuthenticationPrincipal Long userId) {
+            @RequestParam RewardStatus status, @AuthenticationPrincipal Long userId) {
         HabitRewardListResponse rewards = habitService.getHabitRewards(userId, status);
         return ResponseEntity.ok(ApiResponse.success(rewards));
     }
@@ -66,13 +65,21 @@ public class HabitController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    @Operation(summary = "보상 상태 수정")
-    @PatchMapping("/{habitId}/status")
-    public ResponseEntity<ApiResponse<Void>> updateHabitRewardStatus(
+    @Operation(summary = "보상 상태 수정(보상 확인중 -> 진행중)")
+    @PatchMapping("/{habitId}/status/in-progress")
+    public ResponseEntity<ApiResponse<Void>> updateHabitRewardStatusToInProgress(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long habitId,
             @Valid @RequestBody HabitRewardUpdateRequest request) {
-        habitService.updateHabitRewardStatus(userId, habitId, request);
+        habitService.updateHabitRewardStatusToInProgress(userId, habitId, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @Operation(summary = "보상 상태 수정(보상 대기중 -> 완료)")
+    @PatchMapping("/{habitId}/status/complete")
+    public ResponseEntity<ApiResponse<Void>> updateHabitRewardStatusToComplete(
+            @AuthenticationPrincipal Long userId, @PathVariable Long habitId) {
+        habitService.updateHabitRewardStatusToComplete(userId, habitId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

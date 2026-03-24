@@ -2,6 +2,7 @@ package com.swyp.server.domain.habit.repository;
 
 import com.swyp.server.domain.habit.entity.Habit;
 import com.swyp.server.domain.habit.entity.RewardStatus;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -22,6 +23,7 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
     List<Habit> findAllByUserIdAndStatusOrderByIsCompletedAscIdDesc(
             Long userId, RewardStatus status);
 
+    @EntityGraph(attributePaths = "user")
     @Query(
             "SELECT h FROM Habit h "
                     + "WHERE h.user.id IN :userIds "
@@ -29,6 +31,13 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
                     + "ORDER BY h.isCompleted ASC, h.id DESC")
     List<Habit> findAllByUserIdsAndStatusOptional(
             @Param("userIds") List<Long> userIds, @Param("status") RewardStatus status);
+
+    @Modifying(clearAutomatically = true)
+    @Query(
+            "UPDATE Habit h SET h.status = 'REWARD_WAITING' "
+                    + "WHERE h.status = 'IN_PROGRESS' "
+                    + "AND h.expiredAt < :now")
+    void updateExpiredHabitsStatus(@Param("now") LocalDateTime now);
 
     // 미완료 습관이 있는 유저 ID 조회
     @Query(
