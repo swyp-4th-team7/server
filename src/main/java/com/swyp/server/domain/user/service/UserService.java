@@ -26,7 +26,6 @@ public class UserService {
 
     @Transactional
     public User findOrCreateUser(String email, String nickname, String profileImageUrl) {
-
         return userRepository
                 .findByEmail(email)
                 .orElseGet(
@@ -92,6 +91,7 @@ public class UserService {
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         refreshTokenRepository.deleteByUserId(userId);
         fcmTokenRepository.deleteByUserId(userId);
+        user.maskEmail();
         user.delete();
     }
 

@@ -79,4 +79,8 @@ public class User extends SoftDeletableEntity {
         this.termsAgreed = true;
         this.termsAgreedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
+
+    public void maskEmail() {
+        this.email = this.email + "_" + System.currentTimeMillis();
+    }
 }
