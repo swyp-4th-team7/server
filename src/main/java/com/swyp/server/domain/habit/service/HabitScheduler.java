@@ -23,7 +23,7 @@ public class HabitScheduler {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정 0시 0분 0초
+    @Scheduled(cron = "0 0 0 * * *")
     public void resetDailyHabits() {
         log.info("매일 습관 완료 상태 초기화 스케줄러 시작");
         habitRepository.resetAllHabits();
