@@ -9,6 +9,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -126,7 +127,11 @@ public class GlobalExceptionHandler {
             HttpRequestMethodNotSupportedException e) {
         log.warn("HttpRequestMethodNotSupportedException: {}", e.getMethod());
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.putAll(e.getHeaders());
+
         return ResponseEntity.status(ErrorCode.METHOD_NOT_ALLOWED.getStatus())
+                .headers(headers)
                 .body(
                         ApiResponse.fail(
                                 ErrorCode.METHOD_NOT_ALLOWED.getCode(),
