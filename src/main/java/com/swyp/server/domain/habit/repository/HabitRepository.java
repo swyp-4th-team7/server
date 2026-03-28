@@ -24,13 +24,12 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
             Long userId, RewardStatus status);
 
     @EntityGraph(attributePaths = "user")
-    @Query(
-            "SELECT h FROM Habit h "
-                    + "WHERE h.user.id IN :userIds "
-                    + "AND (:status IS NULL OR h.status = :status) "
-                    + "ORDER BY "
-                    + "  (CASE h.status WHEN com.swyp.server.domain.habit.entity.RewardStatus.COMPLETE THEN 1 ELSE 0 END) ASC, "
-                    + "  h.id DESC")
+    @Query("SELECT h FROM Habit h " +
+            "WHERE h.user.id IN :userIds " +
+            "AND (:status IS NULL OR h.status = :status) " +
+            "ORDER BY " +
+            "  CASE WHEN h.status = 'COMPLETE' THEN 1 ELSE 0 END ASC, " +
+            "  h.id DESC")
     List<Habit> findAllByUserIdsAndStatusOptional(
             @Param("userIds") List<Long> userIds, @Param("status") RewardStatus status);
 
