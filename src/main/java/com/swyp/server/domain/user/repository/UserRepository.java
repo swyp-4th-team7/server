@@ -28,9 +28,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.userType = :userType")
     List<User> findAllActiveByUserType(@Param("userType") UserType userType);
-
-    @Query(
-            value = "SELECT * FROM users WHERE email = :email AND deleted_at IS NOT NULL",
-            nativeQuery = true)
-    Optional<User> findDeletedByEmail(@Param("email") String email);
 }
