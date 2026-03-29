@@ -3,7 +3,6 @@ package com.swyp.server.domain.habit.service;
 import com.swyp.server.domain.habit.repository.HabitRepository;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -5,7 +5,6 @@ import com.swyp.server.global.SoftDeletableEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
