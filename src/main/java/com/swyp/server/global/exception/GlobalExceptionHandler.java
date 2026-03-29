@@ -9,14 +9,17 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -105,6 +108,34 @@ public class GlobalExceptionHandler {
                         ApiResponse.fail(
                                 DATA_INTEGRITY_VIOLATION.getCode(),
                                 DATA_INTEGRITY_VIOLATION.getMessage()));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNoResourceFoundException(
+            NoResourceFoundException e) {
+        log.warn("NoResourceFoundException: {}", e.getResourcePath());
+
+        return ResponseEntity.status(ErrorCode.RESOURCE_NOT_FOUND.getStatus())
+                .body(
+                        ApiResponse.fail(
+                                ErrorCode.RESOURCE_NOT_FOUND.getCode(),
+                                ErrorCode.RESOURCE_NOT_FOUND.getMessage()));
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException e) {
+        log.warn("HttpRequestMethodNotSupportedException: {}", e.getMethod());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.putAll(e.getHeaders());
+
+        return ResponseEntity.status(ErrorCode.METHOD_NOT_ALLOWED.getStatus())
+                .headers(headers)
+                .body(
+                        ApiResponse.fail(
+                                ErrorCode.METHOD_NOT_ALLOWED.getCode(),
+                                ErrorCode.METHOD_NOT_ALLOWED.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
