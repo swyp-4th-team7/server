@@ -78,7 +78,10 @@ public class GrowthService {
                 habitDailyCompletionRepository
                         .countCompletionsByUserIds(childIds, startDate, endDate)
                         .stream()
-                        .collect(Collectors.toMap(row -> (Long) row[0], row -> (Long) row[1]));
+                        .collect(
+                                Collectors.toMap(
+                                        row -> ((Number) row[0]).longValue(),
+                                        row -> ((Number) row[1]).longValue()));
 
         List<ChildGrowthResponse> children =
                 relations.stream()
