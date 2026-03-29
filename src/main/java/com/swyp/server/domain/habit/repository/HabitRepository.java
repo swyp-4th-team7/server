@@ -28,7 +28,9 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
             "SELECT h FROM Habit h "
                     + "WHERE h.user.id IN :userIds "
                     + "AND (:status IS NULL OR h.status = :status) "
-                    + "ORDER BY h.isCompleted ASC, h.id DESC")
+                    + "ORDER BY "
+                    + "  CASE h.status WHEN 'COMPLETE' THEN 1 ELSE 0 END ASC, "
+                    + "  h.id DESC")
     List<Habit> findAllByUserIdsAndStatusOptional(
             @Param("userIds") List<Long> userIds, @Param("status") RewardStatus status);
 
@@ -38,6 +40,10 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
                     + "WHERE h.status = 'IN_PROGRESS' "
                     + "AND h.expiredAt < :now")
     void updateExpiredHabitsStatus(@Param("now") LocalDateTime now);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Habit h SET h.isCompleted = false " + "WHERE h.isCompleted = true")
+    void resetAllHabits();
 
     // 미완료 습관이 있는 유저 ID 조회
     @Query(

@@ -10,7 +10,7 @@ public record HabitResponse(
     public static HabitResponse from(Habit habit) {
 
         String reward =
-                (habit.getUser().getUserType().equals(UserType.PARENT)) ? null : habit.getReward();
+                (habit.getUser().getUserType() == (UserType.PARENT)) ? null : habit.getReward();
 
         return new HabitResponse(
                 habit.getId(), habit.getTitle(), habit.getDuration(), reward, habit.isCompleted());
