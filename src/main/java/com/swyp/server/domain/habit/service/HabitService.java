@@ -3,7 +3,9 @@ package com.swyp.server.domain.habit.service;
 import com.swyp.server.domain.family.service.FamilyRelationService;
 import com.swyp.server.domain.habit.dto.*;
 import com.swyp.server.domain.habit.entity.Habit;
+import com.swyp.server.domain.habit.entity.HabitDailyCompletion;
 import com.swyp.server.domain.habit.entity.RewardStatus;
+import com.swyp.server.domain.habit.repository.HabitDailyCompletionRepository;
 import com.swyp.server.domain.habit.repository.HabitRepository;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
@@ -11,6 +13,8 @@ import com.swyp.server.domain.user.repository.UserRepository;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
 import com.swyp.server.global.notification.NotificationService;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +31,7 @@ public class HabitService {
     private final HabitRepository habitRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final HabitDailyCompletionRepository habitDailyCompletionRepository;
 
     @Transactional
     public Habit createHabit(Long userId, HabitCreateRequest request) {
@@ -174,6 +179,15 @@ public class HabitService {
 
         if (request.isCompleted()) {
             habit.complete();
+            LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+            // 오늘 이미 기록된 경우에 중복 저장 방지
+            if (!habitDailyCompletionRepository.existsByUserIdAndCompletionDate(userId, today)) {
+                habitDailyCompletionRepository.save(
+                        HabitDailyCompletion.builder()
+                                .user(habit.getUser())
+                                .completionDate(today)
+                                .build());
+            }
         } else {
             habit.incomplete();
         }

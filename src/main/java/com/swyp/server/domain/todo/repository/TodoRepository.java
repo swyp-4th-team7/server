@@ -35,4 +35,23 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             "SELECT DISTINCT t.user.id FROM Todo t WHERE t.user.id IN :userIds AND t.todoDate = :date AND t.completed = false AND t.deletedAt IS NULL")
     List<Long> findUserIdsWithIncompleteTodo(
             @Param("userIds") List<Long> userIds, @Param("date") LocalDate date);
+
+    @Query(
+            "SELECT COUNT(t) FROM Todo t WHERE t.user.id = :userId "
+                    + "AND t.todoDate BETWEEN :startDate AND :endDate "
+                    + "AND t.deletedAt IS NULL")
+    int countAllByUserIdAndDateBetween(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    @Query(
+            "SELECT COUNT(t) FROM Todo t WHERE t.user.id = :userId "
+                    + "AND t.todoDate BETWEEN :startDate AND :endDate "
+                    + "AND t.completed = true "
+                    + "AND t.deletedAt IS NULL")
+    int countCompletedByUserIdAndDateBetween(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 }
