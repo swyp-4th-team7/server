@@ -10,21 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface HabitDailyCompletionRepository extends JpaRepository<HabitDailyCompletion, Long> {
 
-    boolean existsByUserIdAndCompletionDate(Long userId, LocalDate completionDate);
-
     List<HabitDailyCompletion> findAllByUserIdAndCompletionDateBetween(
             Long userId, LocalDate startDate, LocalDate endDate);
-
-    @Query(
-            "SELECT DISTINCT h.user.id FROM HabitDailyCompletion h "
-                    + "WHERE h.user.id IN :userIds "
-                    + "AND h.completionDate BETWEEN :startDate AND :endDate "
-                    + "GROUP BY h.user.id "
-                    + "ORDER BY COUNT(h.id) DESC")
-    List<Long> findUserIdsWithCompletions(
-            @Param("userIds") List<Long> userIds,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
 
     @Query(
             "SELECT h.user.id, COUNT(h.id) FROM HabitDailyCompletion h "
