@@ -67,7 +67,11 @@ public class GrowthService {
         String weekRange = formatWeekRange(startDate, endDate);
 
         List<FamilyRelation> relations = familyRelationRepository.findAllByOwnerUserId(parentId);
-        List<Long> childIds = relations.stream().map(r -> r.getTargetUser().getId()).toList();
+        List<Long> childIds =
+                relations.stream()
+                        .filter(r -> r.getTargetUser() != null)
+                        .map(r -> r.getTargetUser().getId())
+                        .toList();
 
         // 습관 완료 날 수를 한 번에 조회
         Map<Long, Long> habitCompletionCountMap =
@@ -78,6 +82,7 @@ public class GrowthService {
 
         List<ChildGrowthResponse> children =
                 relations.stream()
+                        .filter(r -> r.getTargetUser() != null)
                         .map(
                                 relation -> {
                                     User child = relation.getTargetUser();
