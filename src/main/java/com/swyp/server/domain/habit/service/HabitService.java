@@ -192,6 +192,9 @@ public class HabitService {
             }
         } else {
             habit.incomplete();
+            // 오늘 완료 이력 삭제
+            LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+            habitDailyCompletionRepository.deleteByUserIdAndCompletionDate(userId, today);
         }
     }
 

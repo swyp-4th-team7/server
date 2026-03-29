@@ -41,4 +41,6 @@ public interface HabitDailyCompletionRepository extends JpaRepository<HabitDaily
             value = "DELETE FROM habit_daily_completions WHERE user_id = :userId",
             nativeQuery = true)
     void hardDeleteAllByUserId(@Param("userId") Long userId);
+
+    void deleteByUserIdAndCompletionDate(Long userId, LocalDate completionDate);
 }
