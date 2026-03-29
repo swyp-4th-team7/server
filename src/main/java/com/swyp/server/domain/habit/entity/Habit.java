@@ -4,6 +4,8 @@ import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.SoftDeletableEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,7 +54,7 @@ public class Habit extends SoftDeletableEntity {
         this.reward = reward;
         this.isCompleted = false;
         this.status = RewardStatus.REWARD_CHECKING;
-        this.expiredAt = LocalDateTime.now().plusDays(duration.getDays());
+        this.expiredAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusDays(duration.getDays());
     }
 
     public void updateTitle(String title) {
