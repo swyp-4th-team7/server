@@ -8,7 +8,6 @@ import com.swyp.server.domain.growth.dto.GrowthHabitResponse;
 import com.swyp.server.domain.growth.dto.GrowthTodoResponse;
 import com.swyp.server.domain.habit.repository.HabitDailyCompletionRepository;
 import com.swyp.server.domain.todo.repository.TodoRepository;
-import com.swyp.server.domain.todo.service.TodoService;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.global.util.DateUtils;
 import java.time.LocalDate;
@@ -31,7 +30,6 @@ public class GrowthService {
     private static final DateTimeFormatter WEEK_RANGE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.KOREAN);
 
-    private final TodoService todoService;
     private final TodoRepository todoRepository;
     private final HabitDailyCompletionRepository habitDailyCompletionRepository;
     private final FamilyRelationRepository familyRelationRepository;
