@@ -73,15 +73,16 @@ public class GrowthService {
                         .map(r -> r.getTargetUser().getId())
                         .toList();
 
-        // 습관 완료 날 수를 한 번에 조회
         Map<Long, Long> habitCompletionCountMap =
-                habitDailyCompletionRepository
-                        .countCompletionsByUserIds(childIds, startDate, endDate)
-                        .stream()
-                        .collect(
-                                Collectors.toMap(
-                                        row -> ((Number) row[0]).longValue(),
-                                        row -> ((Number) row[1]).longValue()));
+                childIds.isEmpty()
+                        ? Map.of()
+                        : habitDailyCompletionRepository
+                                .countCompletionsByUserIds(childIds, startDate, endDate)
+                                .stream()
+                                .collect(
+                                        Collectors.toMap(
+                                                row -> ((Number) row[0]).longValue(),
+                                                row -> ((Number) row[1]).longValue()));
 
         List<ChildGrowthResponse> children =
                 relations.stream()
