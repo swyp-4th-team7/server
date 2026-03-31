@@ -180,21 +180,19 @@ public class HabitService {
         if (request.isCompleted()) {
             habit.complete();
             LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-            // 오늘 이미 기록된 경우에 중복 저장 방지
             try {
                 habitDailyCompletionRepository.save(
                         HabitDailyCompletion.builder()
                                 .user(habit.getUser())
+                                .habit(habit)
                                 .completionDate(today)
                                 .build());
             } catch (org.springframework.dao.DataIntegrityViolationException ignored) {
-                // 동시 요청으로 이미 오늘 완료 이력이 있으면 무시
             }
         } else {
             habit.incomplete();
-            // 오늘 완료 이력 삭제
             LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-            habitDailyCompletionRepository.deleteByUserIdAndCompletionDate(userId, today);
+            habitDailyCompletionRepository.deleteByHabitIdAndCompletionDate(habit.getId(), today);
         }
     }
 

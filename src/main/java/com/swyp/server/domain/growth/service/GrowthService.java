@@ -50,11 +50,16 @@ public class GrowthService {
         LocalDate startDate = DateUtils.getWeekStart(today);
         LocalDate endDate = DateUtils.getWeekEnd(today);
 
-        int completedDays =
+        // habit_id별 이력이 있으므로 distinct 날짜 수로 계산
+        long completedDays =
                 habitDailyCompletionRepository
                         .findAllByUserIdAndCompletionDateBetween(userId, startDate, endDate)
-                        .size();
-        int starCount = calculateHabitStarCount(completedDays);
+                        .stream()
+                        .map(c -> c.getCompletionDate())
+                        .distinct()
+                        .count();
+
+        int starCount = calculateHabitStarCount((int) completedDays);
         String weekRange = formatWeekRange(startDate, endDate);
 
         return new GrowthHabitResponse(starCount, weekRange);

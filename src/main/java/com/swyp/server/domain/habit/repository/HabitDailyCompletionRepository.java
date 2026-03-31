@@ -14,7 +14,7 @@ public interface HabitDailyCompletionRepository extends JpaRepository<HabitDaily
             Long userId, LocalDate startDate, LocalDate endDate);
 
     @Query(
-            "SELECT h.user.id, COUNT(h.id) FROM HabitDailyCompletion h "
+            "SELECT h.user.id, COUNT(DISTINCT h.completionDate) FROM HabitDailyCompletion h "
                     + "WHERE h.user.id IN :userIds "
                     + "AND h.completionDate BETWEEN :startDate AND :endDate "
                     + "GROUP BY h.user.id")
@@ -29,5 +29,5 @@ public interface HabitDailyCompletionRepository extends JpaRepository<HabitDaily
             nativeQuery = true)
     void hardDeleteAllByUserId(@Param("userId") Long userId);
 
-    void deleteByUserIdAndCompletionDate(Long userId, LocalDate completionDate);
+    void deleteByHabitIdAndCompletionDate(Long habitId, LocalDate completionDate);
 }
