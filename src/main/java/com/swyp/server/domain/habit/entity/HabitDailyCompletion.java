@@ -45,8 +45,8 @@ public class HabitDailyCompletion {
     private LocalDate completionDate;
 
     @Builder
-    public HabitDailyCompletion(User user, Habit habit, LocalDate completionDate) {
-        this.user = user;
+    public HabitDailyCompletion(Habit habit, LocalDate completionDate) {
+        this.user = habit.getUser();
         this.habit = habit;
         this.completionDate = completionDate;
     }

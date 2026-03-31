@@ -182,11 +182,7 @@ public class HabitService {
             LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
             try {
                 habitDailyCompletionRepository.save(
-                        HabitDailyCompletion.builder()
-                                .user(habit.getUser())
-                                .habit(habit)
-                                .completionDate(today)
-                                .build());
+                        HabitDailyCompletion.builder().habit(habit).completionDate(today).build());
             } catch (org.springframework.dao.DataIntegrityViolationException ignored) {
             }
         } else {
