@@ -22,8 +22,8 @@ import lombok.NoArgsConstructor;
         name = "habit_daily_completions",
         uniqueConstraints = {
             @UniqueConstraint(
-                    name = "uk_habit_daily_completion_user_date",
-                    columnNames = {"user_id", "completion_date"})
+                    name = "uk_habit_daily_completion_habit_date",
+                    columnNames = {"habit_id", "completion_date"})
         })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,12 +37,17 @@ public class HabitDailyCompletion {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "habit_id", nullable = false)
+    private Habit habit;
+
     @Column(name = "completion_date", nullable = false)
     private LocalDate completionDate;
 
     @Builder
-    public HabitDailyCompletion(User user, LocalDate completionDate) {
-        this.user = user;
+    public HabitDailyCompletion(Habit habit, LocalDate completionDate) {
+        this.user = habit.getUser();
+        this.habit = habit;
         this.completionDate = completionDate;
     }
 }

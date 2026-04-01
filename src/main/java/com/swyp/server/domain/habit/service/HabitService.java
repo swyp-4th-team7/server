@@ -173,28 +173,24 @@ public class HabitService {
                         .findByIdAndUserId(habitId, userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
+        boolean wasCompleted = habit.isCompleted();
+        boolean nowCompleted = request.isCompleted();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+
         habit.updateTitle(request.title());
         habit.updateDuration(request.duration());
         habit.updateReward(reward);
 
-        if (request.isCompleted()) {
-            habit.complete();
-            LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-            // 오늘 이미 기록된 경우에 중복 저장 방지
-            try {
+        if (wasCompleted != nowCompleted) {
+            if (nowCompleted) {
+                habit.complete();
                 habitDailyCompletionRepository.save(
-                        HabitDailyCompletion.builder()
-                                .user(habit.getUser())
-                                .completionDate(today)
-                                .build());
-            } catch (org.springframework.dao.DataIntegrityViolationException ignored) {
-                // 동시 요청으로 이미 오늘 완료 이력이 있으면 무시
+                        HabitDailyCompletion.builder().habit(habit).completionDate(today).build());
+            } else {
+                habit.incomplete();
+                habitDailyCompletionRepository.deleteByHabitIdAndCompletionDate(
+                        habit.getId(), today);
             }
-        } else {
-            habit.incomplete();
-            // 오늘 완료 이력 삭제
-            LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-            habitDailyCompletionRepository.deleteByUserIdAndCompletionDate(userId, today);
         }
     }
 
