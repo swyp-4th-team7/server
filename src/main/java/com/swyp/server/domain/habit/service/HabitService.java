@@ -173,22 +173,24 @@ public class HabitService {
                         .findByIdAndUserId(habitId, userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
+        boolean wasCompleted = habit.isCompleted();
+        boolean nowCompleted = request.isCompleted();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+
         habit.updateTitle(request.title());
         habit.updateDuration(request.duration());
         habit.updateReward(reward);
 
-        if (request.isCompleted()) {
-            habit.complete();
-            LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-            try {
+        if (wasCompleted != nowCompleted) {
+            if (nowCompleted) {
+                habit.complete();
                 habitDailyCompletionRepository.save(
                         HabitDailyCompletion.builder().habit(habit).completionDate(today).build());
-            } catch (org.springframework.dao.DataIntegrityViolationException ignored) {
+            } else {
+                habit.incomplete();
+                habitDailyCompletionRepository.deleteByHabitIdAndCompletionDate(
+                        habit.getId(), today);
             }
-        } else {
-            habit.incomplete();
-            LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-            habitDailyCompletionRepository.deleteByHabitIdAndCompletionDate(habit.getId(), today);
         }
     }
 
