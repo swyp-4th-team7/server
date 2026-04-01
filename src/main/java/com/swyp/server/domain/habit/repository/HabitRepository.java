@@ -17,7 +17,12 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
     Optional<Habit> findByIdAndUserId(Long habitId, Long userId);
 
     @EntityGraph(attributePaths = "user")
-    List<Habit> findAllByUserIdOrderByIsCompletedAscIdDesc(Long userId);
+    @Query(
+            "SELECT h FROM Habit h "
+                    + "WHERE h.user.id = :userId "
+                    + "AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS') "
+                    + "ORDER BY h.isCompleted ASC, h.id DESC")
+    List<Habit> findAllActiveHabitsByUserId(@Param("userId") Long userId);
 
     @EntityGraph(attributePaths = "user")
     List<Habit> findAllByUserIdAndStatusOrderByIsCompletedAscIdDesc(
@@ -36,13 +41,22 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
 
     @Modifying(clearAutomatically = true)
     @Query(
-            "UPDATE Habit h SET h.status = 'REWARD_WAITING' "
+            "UPDATE Habit h "
+                    + "SET h.status = CASE "
+                    + "    WHEN h.user.userType = 'PARENT' THEN 'COMPLETE' "
+                    + // 부모면 바로 완료
+                    "    ELSE 'REWARD_WAITING' "
+                    + // 아니면 보상 대기
+                    "END "
                     + "WHERE h.status = 'IN_PROGRESS' "
                     + "AND h.expiredAt < :now")
     void updateExpiredHabitsStatus(@Param("now") LocalDateTime now);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Habit h SET h.isCompleted = false " + "WHERE h.isCompleted = true")
+    @Query(
+            "UPDATE Habit h SET h.isCompleted = false "
+                    + " WHERE h.isCompleted = true "
+                    + " AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS')")
     void resetAllHabits();
 
     // 미완료 습관이 있는 유저 ID 조회
