@@ -81,7 +81,7 @@ public class HabitService {
 
     @Transactional(readOnly = true)
     public HabitListResponse getHabits(Long userId) {
-        List<Habit> habits = habitRepository.findAllByUserIdOrderByIsCompletedAscIdDesc(userId);
+        List<Habit> habits = habitRepository.findAllActiveHabitsByUserId(userId);
         return HabitListResponse.from(habits);
     }
 

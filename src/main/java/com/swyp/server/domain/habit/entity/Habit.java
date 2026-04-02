@@ -1,6 +1,7 @@
 package com.swyp.server.domain.habit.entity;
 
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.global.SoftDeletableEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -52,7 +53,10 @@ public class Habit extends SoftDeletableEntity {
         this.duration = duration;
         this.reward = reward;
         this.isCompleted = false;
-        this.status = RewardStatus.REWARD_CHECKING;
+        this.status =
+                (user.getUserType() == UserType.PARENT)
+                        ? RewardStatus.IN_PROGRESS
+                        : RewardStatus.REWARD_CHECKING;
         this.expiredAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusDays(duration.getDays());
     }
 

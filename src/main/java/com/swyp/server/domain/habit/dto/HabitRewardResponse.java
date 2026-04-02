@@ -11,7 +11,8 @@ public record HabitRewardResponse(
         String nickname,
         HabitDuration duration,
         String reward,
-        RewardStatus status) {
+        RewardStatus status,
+        boolean isCompleted) {
     public static HabitRewardResponse from(Habit habit, UserType viewerType) {
 
         String nickname = (viewerType == (UserType.PARENT)) ? habit.getUser().getNickname() : null;
@@ -22,6 +23,7 @@ public record HabitRewardResponse(
                 nickname,
                 habit.getDuration(),
                 habit.getReward(),
-                habit.getStatus());
+                habit.getStatus(),
+                habit.isCompleted());
     }
 }
