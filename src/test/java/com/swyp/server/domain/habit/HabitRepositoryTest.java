@@ -58,6 +58,9 @@ public class HabitRepositoryTest {
                         .reward("testReward")
                         .build();
 
+        habit1.complete();
+        habit1.updateRewardStatus(RewardStatus.IN_PROGRESS);
+
         Habit habit2 =
                 Habit.builder()
                         .user(user)
