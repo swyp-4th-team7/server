@@ -17,13 +17,19 @@ public record HabitRewardResponse(
 
         String nickname = (viewerType == (UserType.PARENT)) ? habit.getUser().getNickname() : null;
 
+        RewardStatus status =
+                (viewerType == (UserType.CHILD)
+                                && habit.getStatus() == RewardStatus.REWARD_CHECKING)
+                        ? RewardStatus.IN_PROGRESS
+                        : habit.getStatus();
+
         return new HabitRewardResponse(
                 habit.getId(),
                 habit.getTitle(),
                 nickname,
                 habit.getDuration(),
                 habit.getReward(),
-                habit.getStatus(),
+                status,
                 habit.isCompleted());
     }
 }
