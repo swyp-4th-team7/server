@@ -109,10 +109,10 @@ public class HabitService {
 
         if (targetUserIds.isEmpty()) return HabitRewardListResponse.empty();
 
-        RewardStatus filteredStatus = status.isAll() ? null : status;
+        List<RewardStatus> searchStatuses = determineSearchStatuses(user.getUserType(), status);
 
         List<Habit> habits =
-                habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, filteredStatus);
+                habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, searchStatuses);
 
         return HabitRewardListResponse.from(habits, user.getUserType());
     }
@@ -290,5 +290,17 @@ public class HabitService {
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
 
         habit.delete();
+    }
+
+    private List<RewardStatus> determineSearchStatuses(UserType userType, RewardStatus status) {
+        if (status == RewardStatus.ALL) {
+            return null;
+        }
+
+        if (userType == UserType.CHILD && status == RewardStatus.IN_PROGRESS) {
+            return List.of(RewardStatus.IN_PROGRESS, RewardStatus.REWARD_CHECKING);
+        }
+
+        return List.of(status);
     }
 }
