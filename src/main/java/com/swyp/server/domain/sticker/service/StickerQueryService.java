@@ -7,6 +7,7 @@ import com.swyp.server.domain.sticker.entity.UserStickerProgress;
 import com.swyp.server.domain.sticker.repository.UserStickerProgressRepository;
 import com.swyp.server.domain.todo.service.TodoService;
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.global.exception.CustomException;
 import com.swyp.server.global.exception.ErrorCode;
 import com.swyp.server.global.util.DateUtils;
@@ -110,6 +111,11 @@ public class StickerQueryService {
 
         List<ChildStickerResponse> children =
                 relations.stream()
+                        .filter(
+                                relation ->
+                                        relation.getTargetUser() != null
+                                                && relation.getTargetUser().getUserType()
+                                                        == UserType.CHILD)
                         .map(relation -> buildChildStickerResponse(relation.getTargetUser()))
                         .toList();
 
