@@ -32,12 +32,12 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
     @Query(
             "SELECT h FROM Habit h "
                     + "WHERE h.user.id IN :userIds "
-                    + "AND (:status IS NULL OR h.status = :status) "
+                    + "AND (:statuses IS NULL OR h.status IN :statuses) "
                     + "ORDER BY "
                     + "  CASE h.status WHEN 'COMPLETE' THEN 1 ELSE 0 END ASC, "
                     + "  h.id DESC")
     List<Habit> findAllByUserIdsAndStatusOptional(
-            @Param("userIds") List<Long> userIds, @Param("status") RewardStatus status);
+            @Param("userIds") List<Long> userIds, @Param("statuses") List<RewardStatus> statuses);
 
     @Modifying(clearAutomatically = true)
     @Query(
