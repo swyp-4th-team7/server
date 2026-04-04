@@ -36,8 +36,9 @@ public class GrowthService {
 
     public GrowthTodoResponse getTodoGrowth(Long userId) {
         LocalDate today = LocalDate.now(SEOUL_ZONE);
-        LocalDate startDate = DateUtils.getWeekStart(today);
-        LocalDate endDate = DateUtils.getWeekEnd(today);
+        LocalDate lastWeek = today.minusWeeks(1);
+        LocalDate startDate = DateUtils.getWeekStart(lastWeek);
+        LocalDate endDate = DateUtils.getWeekEnd(lastWeek);
 
         int starCount = calculateTodoStarCount(userId, startDate, endDate);
         String weekRange = formatWeekRange(startDate, endDate);
@@ -47,8 +48,9 @@ public class GrowthService {
 
     public GrowthHabitResponse getHabitGrowth(Long userId) {
         LocalDate today = LocalDate.now(SEOUL_ZONE);
-        LocalDate startDate = DateUtils.getWeekStart(today);
-        LocalDate endDate = DateUtils.getWeekEnd(today);
+        LocalDate lastWeek = today.minusWeeks(1);
+        LocalDate startDate = DateUtils.getWeekStart(lastWeek);
+        LocalDate endDate = DateUtils.getWeekEnd(lastWeek);
 
         // habit_id별 이력이 있으므로 distinct 날짜 수로 계산
         long completedDays =
@@ -67,8 +69,9 @@ public class GrowthService {
 
     public ChildrenGrowthResponse getChildrenGrowth(Long parentId) {
         LocalDate today = LocalDate.now(SEOUL_ZONE);
-        LocalDate startDate = DateUtils.getWeekStart(today);
-        LocalDate endDate = DateUtils.getWeekEnd(today);
+        LocalDate lastWeek = today.minusWeeks(1);
+        LocalDate startDate = DateUtils.getWeekStart(lastWeek);
+        LocalDate endDate = DateUtils.getWeekEnd(lastWeek);
         String weekRange = formatWeekRange(startDate, endDate);
 
         List<FamilyRelation> relations = familyRelationRepository.findAllByOwnerUserId(parentId);
