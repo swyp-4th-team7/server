@@ -117,6 +117,7 @@ public class StickerQueryService {
                                                 && relation.getTargetUser().getUserType()
                                                         == UserType.CHILD)
                         .map(relation -> buildChildStickerResponse(relation.getTargetUser()))
+                        .filter(response -> response.startDate() != null)
                         .toList();
 
         return new ChildrenStickerResponse(children);

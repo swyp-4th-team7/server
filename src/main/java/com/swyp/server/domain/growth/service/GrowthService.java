@@ -9,6 +9,7 @@ import com.swyp.server.domain.growth.dto.GrowthTodoResponse;
 import com.swyp.server.domain.habit.repository.HabitDailyCompletionRepository;
 import com.swyp.server.domain.todo.repository.TodoRepository;
 import com.swyp.server.domain.user.entity.User;
+import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.global.util.DateUtils;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -77,7 +78,11 @@ public class GrowthService {
         List<FamilyRelation> relations = familyRelationRepository.findAllByOwnerUserId(parentId);
         List<Long> childIds =
                 relations.stream()
-                        .filter(r -> r.getTargetUser() != null)
+                        .filter(
+                                r ->
+                                        r.getTargetUser() != null
+                                                && r.getTargetUser().getUserType()
+                                                        == UserType.CHILD)
                         .map(r -> r.getTargetUser().getId())
                         .toList();
 
@@ -94,7 +99,11 @@ public class GrowthService {
 
         List<ChildGrowthResponse> children =
                 relations.stream()
-                        .filter(r -> r.getTargetUser() != null)
+                        .filter(
+                                r ->
+                                        r.getTargetUser() != null
+                                                && r.getTargetUser().getUserType()
+                                                        == UserType.CHILD)
                         .map(
                                 relation -> {
                                     User child = relation.getTargetUser();
