@@ -39,6 +39,10 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
     List<Habit> findAllByUserIdsAndStatusOptional(
             @Param("userIds") List<Long> userIds, @Param("status") RewardStatus status);
 
+    @EntityGraph(attributePaths = "user")
+    @Query("SELECT h FROM Habit h WHERE h.status = 'IN_PROGRESS' AND h.expiredAt < :now")
+    List<Habit> findExpiredHabits(@Param("now") LocalDateTime now);
+
     @Modifying(clearAutomatically = true)
     @Query(
             "UPDATE Habit h "
