@@ -78,4 +78,57 @@ public class PushNotificationScheduler {
                 targetIds, "해봄", "아직 등록된 습관이 없어요. 지금 습관을 추가해 볼까요?", Map.of());
         log.info("Habit not registered notification sent to {} users", targetIds.size());
     }
+
+    // 매일 13시 - 할 일 미완료 1차 (모든 유저)
+    @Scheduled(cron = "0 0 13 * * *", zone = "Asia/Seoul")
+    public void sendTodoIncompleteFirstNotification() {
+        LocalDate today = LocalDate.now(SEOUL_ZONE);
+        List<User> users = userRepository.findAllActive();
+        List<Long> userIds = users.stream().map(User::getId).toList();
+        if (userIds.isEmpty()) return;
+        List<Long> targetIds = todoRepository.findUserIdsWithIncompleteTodo(userIds, today);
+        notificationService.sendToUsers(
+                targetIds, "해봄", "아직 완료하지 않은 할 일이 있어요. 지금 확인해 볼까요?", Map.of());
+        log.info("Todo incomplete 1st notification sent to {} users", targetIds.size());
+    }
+
+    // 매일 12시 - 습관 미완료 1차 (모든 유저)
+    @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Seoul")
+    public void sendHabitIncompleteFirstNotification() {
+        List<User> users = userRepository.findAllActive();
+        List<Long> userIds = users.stream().map(User::getId).toList();
+        if (userIds.isEmpty()) return;
+        List<Long> targetIds = habitRepository.findUserIdsWithIncompleteHabit(userIds);
+        notificationService.sendToUsers(
+                targetIds, "해봄", "아직 완료하지 않은 습관이 있어요. 지금 바로 실천해 볼까요?", Map.of());
+        log.info("Habit incomplete 1st notification sent to {} users", targetIds.size());
+    }
+
+    // 매주 일요일 20시 - 성장탭 확인 알림
+    @Scheduled(cron = "0 0 20 * * SUN", zone = "Asia/Seoul")
+    public void sendWeeklyGrowthNotification() {
+        List<User> users = userRepository.findAllActive();
+        List<Long> childIds =
+                users.stream()
+                        .filter(u -> u.getUserType() == UserType.CHILD)
+                        .map(User::getId)
+                        .toList();
+        List<Long> parentIds =
+                users.stream()
+                        .filter(u -> u.getUserType() == UserType.PARENT)
+                        .map(User::getId)
+                        .toList();
+        if (!childIds.isEmpty()) {
+            notificationService.sendToUsers(
+                    childIds, "해봄", "이번 주가 마무리 됐어요. 나의 성장을 확인해 보세요!", Map.of());
+        }
+        if (!parentIds.isEmpty()) {
+            notificationService.sendToUsers(
+                    parentIds, "해봄", "이번 주가 마무리 됐어요. 자녀의 성장을 확인해 보세요!", Map.of());
+        }
+        log.info(
+                "Weekly growth notification sent to {} children, {} parents",
+                childIds.size(),
+                parentIds.size());
+    }
 }
