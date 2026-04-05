@@ -107,24 +107,6 @@ public class HabitService {
             targetUserIds.addAll(childIds);
         }
 
-        if (user.getUserType() == UserType.PARENT) {
-            List<Long> childIds =
-                    familyRelationService.getConnectedMembers(userId).stream()
-                            .filter(m -> m.getUserType() == UserType.CHILD)
-                            .map(User::getId)
-                            .toList();
-            if (!childIds.isEmpty()) {
-                TransactionSynchronizationManager.registerSynchronization(
-                        new TransactionSynchronization() {
-                            @Override
-                            public void afterCommit() {
-                                notificationService.sendToUsers(
-                                        childIds, "해봄", "새로운 보상이 추가됐어요! 지금 바로 수락해 볼까요?", Map.of());
-                            }
-                        });
-            }
-        }
-
         if (targetUserIds.isEmpty()) return HabitRewardListResponse.empty();
 
         RewardStatus filteredStatus = status.isAll() ? null : status;
