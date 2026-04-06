@@ -65,7 +65,7 @@ public class HabitService {
                             .map(User::getId)
                             .toList();
             if (!parentIds.isEmpty()) {
-                String childNickname = user.getNickname();
+                String childNickname = user.getNickname() != null ? user.getNickname() : "자녀";
                 TransactionSynchronizationManager.registerSynchronization(
                         new TransactionSynchronization() {
                             @Override
@@ -87,7 +87,7 @@ public class HabitService {
                             .map(User::getId)
                             .toList();
             if (!childIds.isEmpty()) {
-                String parentNickname = user.getNickname();
+                String parentNickname = user.getNickname() != null ? user.getNickname() : "부모";
                 TransactionSynchronizationManager.registerSynchronization(
                         new TransactionSynchronization() {
                             @Override
