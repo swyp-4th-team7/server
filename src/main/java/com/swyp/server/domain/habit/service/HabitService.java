@@ -65,12 +65,38 @@ public class HabitService {
                             .map(User::getId)
                             .toList();
             if (!parentIds.isEmpty()) {
+                String childNickname = user.getNickname() != null ? user.getNickname() : "자녀";
                 TransactionSynchronizationManager.registerSynchronization(
                         new TransactionSynchronization() {
                             @Override
                             public void afterCommit() {
                                 notificationService.sendToUsers(
-                                        parentIds, "해봄", "새로운 보상이 추가됐어요! 지금 바로 수락해 볼까요?", Map.of());
+                                        parentIds,
+                                        "해봄",
+                                        childNickname + "(이)가 새 습관을 추가했어요. 보상을 확인해 볼까요?",
+                                        Map.of());
+                            }
+                        });
+            }
+        }
+
+        if (user.getUserType() == UserType.PARENT) {
+            List<Long> childIds =
+                    familyRelationService.getConnectedMembers(userId).stream()
+                            .filter(m -> m.getUserType() == UserType.CHILD)
+                            .map(User::getId)
+                            .toList();
+            if (!childIds.isEmpty()) {
+                String parentNickname = user.getNickname() != null ? user.getNickname() : "부모";
+                TransactionSynchronizationManager.registerSynchronization(
+                        new TransactionSynchronization() {
+                            @Override
+                            public void afterCommit() {
+                                notificationService.sendToUsers(
+                                        childIds,
+                                        "해봄",
+                                        parentNickname + "님이 새 습관을 추가했어요. 함께 힘내볼까요?",
+                                        Map.of());
                             }
                         });
             }
