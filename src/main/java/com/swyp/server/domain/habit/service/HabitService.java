@@ -112,6 +112,12 @@ public class HabitService {
     }
 
     @Transactional(readOnly = true)
+    public FailedHabitListResponse getFailedHabits(Long userId) {
+        List<Habit> habits = habitRepository.findAllFailedHabitsByUserId(userId);
+        return FailedHabitListResponse.from(habits);
+    }
+
+    @Transactional(readOnly = true)
     public HabitRewardListResponse getHabitRewards(Long userId, RewardStatus status) {
         User user =
                 userRepository

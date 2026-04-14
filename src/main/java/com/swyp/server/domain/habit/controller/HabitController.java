@@ -38,6 +38,14 @@ public class HabitController {
         return ResponseEntity.ok(ApiResponse.success(habits));
     }
 
+    @Operation(summary = "재도전 습관 조회")
+    @GetMapping("/failed")
+    public ResponseEntity<ApiResponse<FailedHabitListResponse>> getFailedHabits(
+            @AuthenticationPrincipal Long userId) {
+        FailedHabitListResponse failedHabits = habitService.getFailedHabits(userId);
+        return ResponseEntity.ok(ApiResponse.success(failedHabits));
+    }
+
     @Operation(summary = "보상 조회")
     @GetMapping("/rewards")
     public ResponseEntity<ApiResponse<HabitRewardListResponse>> getHabitRewards(
