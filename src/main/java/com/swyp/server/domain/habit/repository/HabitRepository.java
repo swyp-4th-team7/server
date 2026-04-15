@@ -62,17 +62,54 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
 
     @Modifying(clearAutomatically = true)
     @Query(
+            "UPDATE Habit h SET h.status = 'FAIL' "
+                    + " WHERE h.isCompleted = false "
+                    + " AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS')"
+                    + " AND h.duration IN ('THREE_DAYS', 'SEVEN_DAYS')")
+    void updateImmediateFailureHabits();
+
+    @Modifying(clearAutomatically = true)
+    @Query(
+            "UPDATE Habit h SET h.status = 'FAIL' "
+                    + " WHERE h.failCount > 1 "
+                    + " AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS')"
+                    + " AND h.duration NOT IN ('THREE_DAYS', 'SEVEN_DAYS')")
+    void updateCumulativeFailureHabits();
+
+    @Modifying(clearAutomatically = true)
+    @Query(
+            "UPDATE Habit h SET h.failCount = h.failCount + 1 "
+                    + " WHERE h.isCompleted = false "
+                    + " AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS') "
+                    + " AND h.duration NOT IN ('THREE_DAYS', 'SEVEN_DAYS')")
+    void updateHabitFailCount();
+
+    @Modifying(clearAutomatically = true)
+    @Query(
+            value =
+                    "UPDATE habits h SET h.fail_count = 0 "
+                            + "WHERE DATEDIFF(:today, h.created_at) > 0 "
+                            + "AND DATEDIFF(:today, h.created_at) % 10 = 0 "
+                            + "AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS') "
+                            + "AND h.duration NOT IN ('THREE_DAYS', 'SEVEN_DAYS')",
+            nativeQuery = true)
+    void resetFailCount(@Param("today") LocalDateTime today);
+
+    @Modifying(clearAutomatically = true)
+    @Query(
             "UPDATE Habit h SET h.isCompleted = false "
                     + " WHERE h.isCompleted = true "
                     + " AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS')")
     void resetAllHabits();
 
     // 미완료 습관이 있는 유저 ID 조회
+
     @Query(
             "SELECT DISTINCT h.user.id FROM Habit h WHERE h.user.id IN :userIds AND h.isCompleted = false")
     List<Long> findUserIdsWithIncompleteHabit(@Param("userIds") List<Long> userIds);
 
     // 습관이 하나도 없는 유저 ID 조회
+
     @Query(
             "SELECT u.id FROM User u WHERE u.id IN :userIds AND u.id NOT IN (SELECT DISTINCT h.user.id FROM Habit h WHERE h.user.id IN :userIds)")
     List<Long> findUserIdsWithNoHabit(@Param("userIds") List<Long> userIds);
