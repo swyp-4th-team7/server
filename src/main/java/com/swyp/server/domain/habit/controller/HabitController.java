@@ -73,6 +73,14 @@ public class HabitController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    @Operation(summary = "습관 재도전")
+    @PatchMapping("/failed/{habitId}/status/in-progress")
+    public ResponseEntity<ApiResponse<Void>> retryFailedHabits(
+            @AuthenticationPrincipal Long userId, @PathVariable Long habitId) {
+        habitService.retryFailedHabit(userId, habitId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
     @Operation(summary = "보상 상태 수정(보상 확인중 -> 진행중)")
     @PatchMapping("/{habitId}/status/in-progress")
     public ResponseEntity<ApiResponse<Void>> updateHabitRewardStatusToInProgress(
