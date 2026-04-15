@@ -14,5 +14,6 @@ public final class SecurityPath {
                     "/api-docs/**",
                     "/swagger-ui.html",
                     "/privacy.html",
-                    "/terms.html");
+                    "/terms.html",
+                    "/app-ads.txt");
 }
