@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 public interface HabitRepository extends JpaRepository<Habit, Long> {
     Optional<Habit> findByIdAndUserId(Long habitId, Long userId);
 
+    Optional<Habit> findByIdAndUserIdAndStatus(Long habitId, Long userId, RewardStatus status);
+
     @EntityGraph(attributePaths = "user")
     @Query(
             "SELECT h FROM Habit h "

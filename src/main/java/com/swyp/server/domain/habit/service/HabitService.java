@@ -230,9 +230,15 @@ public class HabitService {
     public void retryFailedHabit(Long userId, Long habitId) {
         Habit habit =
                 habitRepository
-                        .findByIdAndUserId(habitId, userId)
+                        .findByIdAndUserIdAndStatus(habitId, userId, RewardStatus.FAIL)
                         .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
-        habit.updateRewardStatus(RewardStatus.IN_PROGRESS);
+
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        habit.retry(user);
     }
 
     @Transactional

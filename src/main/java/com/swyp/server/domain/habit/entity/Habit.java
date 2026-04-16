@@ -88,4 +88,13 @@ public class Habit extends SoftDeletableEntity {
     public void updateRewardStatus(RewardStatus rewardStatus) {
         this.status = rewardStatus;
     }
+
+    public void retry(User user) {
+        this.status =
+                user.getUserType() == UserType.CHILD
+                        ? RewardStatus.REWARD_CHECKING
+                        : RewardStatus.IN_PROGRESS;
+
+        this.failCount = 0;
+    }
 }
