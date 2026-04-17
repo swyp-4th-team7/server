@@ -38,7 +38,7 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
     @Query(
             "SELECT h FROM Habit h "
                     + "WHERE h.user.id IN :userIds "
-                    + "AND (:statuses IS NULL OR h.status IN :statuses) "
+                    + "AND h.status IN :statuses "
                     + "ORDER BY "
                     + "  CASE h.status WHEN 'COMPLETE' THEN 1 ELSE 0 END ASC, "
                     + "  h.id DESC")

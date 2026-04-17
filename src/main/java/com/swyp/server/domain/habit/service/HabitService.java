@@ -139,9 +139,9 @@ public class HabitService {
             targetUserIds.addAll(childIds);
         }
 
-        if (targetUserIds.isEmpty()) return HabitRewardListResponse.empty();
-
         List<RewardStatus> searchStatuses = determineSearchStatuses(user.getUserType(), status);
+
+        if(targetUserIds.isEmpty() || searchStatuses.isEmpty()) return HabitRewardListResponse.empty();
 
         List<Habit> habits =
                 habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, searchStatuses);
@@ -340,8 +340,12 @@ public class HabitService {
     }
 
     private List<RewardStatus> determineSearchStatuses(UserType userType, RewardStatus status) {
+        if (status == RewardStatus.FAIL) {
+            return List.of();
+        }
+
         if (status == RewardStatus.ALL) {
-            return null;
+            return List.of(RewardStatus.REWARD_CHECKING, RewardStatus.IN_PROGRESS, RewardStatus.REWARD_WAITING, RewardStatus.COMPLETE);
         }
 
         if (userType == UserType.CHILD && status == RewardStatus.IN_PROGRESS) {
