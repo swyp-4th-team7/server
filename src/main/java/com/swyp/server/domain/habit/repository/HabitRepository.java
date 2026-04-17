@@ -92,6 +92,7 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
                     "UPDATE habits h SET h.fail_count = 0 "
                             + "WHERE DATEDIFF(:today, h.created_at) > 0 "
                             + "AND DATEDIFF(:today, h.created_at) % 10 = 0 "
+                            + "AND h.fail_count < 2 "
                             + "AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS') "
                             + "AND h.duration NOT IN ('THREE_DAYS', 'SEVEN_DAYS')",
             nativeQuery = true)
