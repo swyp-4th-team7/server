@@ -38,6 +38,14 @@ public class HabitController {
         return ResponseEntity.ok(ApiResponse.success(habits));
     }
 
+    @Operation(summary = "재도전 습관 조회")
+    @GetMapping("/failed")
+    public ResponseEntity<ApiResponse<FailedHabitListResponse>> getFailedHabits(
+            @AuthenticationPrincipal Long userId) {
+        FailedHabitListResponse failedHabits = habitService.getFailedHabits(userId);
+        return ResponseEntity.ok(ApiResponse.success(failedHabits));
+    }
+
     @Operation(summary = "보상 조회")
     @GetMapping("/rewards")
     public ResponseEntity<ApiResponse<HabitRewardListResponse>> getHabitRewards(
@@ -62,6 +70,14 @@ public class HabitController {
             @Valid @RequestBody HabitUpdateRequest request) {
 
         habitService.updateHabit(userId, habitId, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @Operation(summary = "습관 재도전")
+    @PatchMapping("/failed/{habitId}/status/in-progress")
+    public ResponseEntity<ApiResponse<Void>> retryFailedHabits(
+            @AuthenticationPrincipal Long userId, @PathVariable Long habitId) {
+        habitService.retryFailedHabit(userId, habitId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

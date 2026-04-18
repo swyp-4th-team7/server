@@ -112,6 +112,12 @@ public class HabitService {
     }
 
     @Transactional(readOnly = true)
+    public FailedHabitListResponse getFailedHabits(Long userId) {
+        List<Habit> habits = habitRepository.findAllFailedHabitsByUserId(userId);
+        return FailedHabitListResponse.from(habits);
+    }
+
+    @Transactional(readOnly = true)
     public HabitRewardListResponse getHabitRewards(Long userId, RewardStatus status) {
         User user =
                 userRepository
@@ -133,9 +139,9 @@ public class HabitService {
             targetUserIds.addAll(childIds);
         }
 
-        if (targetUserIds.isEmpty()) return HabitRewardListResponse.empty();
-
         List<RewardStatus> searchStatuses = determineSearchStatuses(user.getUserType(), status);
+
+        if(targetUserIds.isEmpty() || searchStatuses.isEmpty()) return HabitRewardListResponse.empty();
 
         List<Habit> habits =
                 habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, searchStatuses);
@@ -218,6 +224,21 @@ public class HabitService {
                         habit.getId(), today);
             }
         }
+    }
+
+    @Transactional
+    public void retryFailedHabit(Long userId, Long habitId) {
+        Habit habit =
+                habitRepository
+                        .findByIdAndUserIdAndStatus(habitId, userId, RewardStatus.FAIL)
+                        .orElseThrow(() -> new CustomException(ErrorCode.HABIT_NOT_FOUND));
+
+        User user =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        habit.retry(user);
     }
 
     @Transactional
@@ -319,8 +340,12 @@ public class HabitService {
     }
 
     private List<RewardStatus> determineSearchStatuses(UserType userType, RewardStatus status) {
+        if (status == RewardStatus.FAIL) {
+            return List.of();
+        }
+
         if (status == RewardStatus.ALL) {
-            return null;
+            return List.of(RewardStatus.REWARD_CHECKING, RewardStatus.IN_PROGRESS, RewardStatus.REWARD_WAITING, RewardStatus.COMPLETE);
         }
 
         if (userType == UserType.CHILD && status == RewardStatus.IN_PROGRESS) {

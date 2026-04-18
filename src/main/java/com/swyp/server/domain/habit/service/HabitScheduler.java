@@ -28,9 +28,17 @@ public class HabitScheduler {
     @Transactional
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void checkExpiredHabits() {
-        log.info("만료된 습관 체크 스케줄러 시작");
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
+        log.info("실패 습관 확인 스케줄러 시작");
+        habitRepository.updateHabitFailCount();
+        habitRepository.updateImmediateFailureHabits();
+        habitRepository.updateCumulativeFailureHabits();
+
+        log.info("습관 실패 횟수 초기화 스케줄러 시작");
+        habitRepository.resetFailCount(now);
+
+        log.info("만료된 습관 체크 스케줄러 시작");
         List<Habit> expiredHabits = habitRepository.findExpiredHabits(now);
 
         expiredHabits.stream()
@@ -57,11 +65,7 @@ public class HabitScheduler {
                         });
 
         habitRepository.updateExpiredHabitsStatus(now);
-    }
 
-    @Transactional
-    @Scheduled(cron = "0 1 0 * * *", zone = "Asia/Seoul")
-    public void resetDailyHabits() {
         log.info("매일 습관 완료 상태 초기화 스케줄러 시작");
         habitRepository.resetAllHabits();
     }

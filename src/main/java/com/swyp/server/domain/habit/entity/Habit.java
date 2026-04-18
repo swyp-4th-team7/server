@@ -46,6 +46,9 @@ public class Habit extends SoftDeletableEntity {
     @Column(nullable = false)
     private LocalDateTime expiredAt;
 
+    @Column(nullable = false)
+    private int failCount;
+
     @Builder
     public Habit(User user, String title, HabitDuration duration, String reward) {
         this.user = user;
@@ -58,6 +61,7 @@ public class Habit extends SoftDeletableEntity {
                         ? RewardStatus.IN_PROGRESS
                         : RewardStatus.REWARD_CHECKING;
         this.expiredAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusDays(duration.getDays());
+        this.failCount = 0;
     }
 
     public void updateTitle(String title) {
@@ -83,5 +87,14 @@ public class Habit extends SoftDeletableEntity {
 
     public void updateRewardStatus(RewardStatus rewardStatus) {
         this.status = rewardStatus;
+    }
+
+    public void retry(User user) {
+        this.status =
+                user.getUserType() == UserType.CHILD
+                        ? RewardStatus.REWARD_CHECKING
+                        : RewardStatus.IN_PROGRESS;
+
+        this.failCount = 0;
     }
 }

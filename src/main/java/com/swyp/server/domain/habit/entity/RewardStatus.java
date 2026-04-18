@@ -10,7 +10,8 @@ public enum RewardStatus {
     REWARD_WAITING("보상 대기중"),
     IN_PROGRESS("진행중"),
     COMPLETE("완료"),
-    ALL("전체");
+    ALL("전체"),
+    FAIL("실패");
 
     private final String label;
 
