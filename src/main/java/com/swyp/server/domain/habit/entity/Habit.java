@@ -4,6 +4,8 @@ import com.swyp.server.domain.habit.dto.HabitRetryRequest;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.global.SoftDeletableEntity;
+import com.swyp.server.global.exception.CustomException;
+import com.swyp.server.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -91,6 +93,11 @@ public class Habit extends SoftDeletableEntity {
     }
 
     public void retry(User user, HabitRetryRequest request) {
+        if (user.getUserType() == UserType.CHILD) {
+            if (request.reward() == null || request.reward().isBlank())
+                throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
+        }
+
         this.duration = request.duration();
         this.reward = request.reward();
         this.status =
