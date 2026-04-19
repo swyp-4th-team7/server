@@ -1,6 +1,5 @@
 package com.swyp.server.domain.habit.entity;
 
-import com.swyp.server.domain.habit.dto.HabitRetryRequest;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.global.SoftDeletableEntity;
