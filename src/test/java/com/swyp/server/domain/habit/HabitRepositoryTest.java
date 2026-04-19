@@ -186,7 +186,8 @@ public class HabitRepositoryTest {
     }
 
     @Test
-    @DisplayName("매일 자정 보상 확인중, 진행중 상태이며 수행 기간이 '3일', '7일'인 습관들은 당일 미실행 시 실패 상태가 되어야 한다.")
+    @DisplayName(
+            "매일 자정 보상 확인중, 진행중 상태이며 수행 기간이 '3일', '7일'인 습관들은 당일 미실행 시 실패 상태가 되어야 하며 일일 성공 여부가 false가 되어야 한다.")
     void updateImmediateFailureHabits() {
         User user =
                 User.builder()
@@ -232,8 +233,11 @@ public class HabitRepositoryTest {
 
         Assertions.assertThat(threeDaysNotCompletedHabitInDB.getStatus())
                 .isEqualTo(RewardStatus.FAIL);
+        Assertions.assertThat(threeDaysNotCompletedHabitInDB.isCompleted()).isEqualTo(false);
+
         Assertions.assertThat(sevenDaysNotCompletedHabitInDB.getStatus())
                 .isEqualTo(RewardStatus.FAIL);
+        Assertions.assertThat(sevenDaysNotCompletedHabitInDB.isCompleted()).isEqualTo(false);
     }
 
     @Test
