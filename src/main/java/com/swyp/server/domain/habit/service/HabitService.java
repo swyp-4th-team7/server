@@ -141,7 +141,8 @@ public class HabitService {
 
         List<RewardStatus> searchStatuses = determineSearchStatuses(user.getUserType(), status);
 
-        if(targetUserIds.isEmpty() || searchStatuses.isEmpty()) return HabitRewardListResponse.empty();
+        if (targetUserIds.isEmpty() || searchStatuses.isEmpty())
+            return HabitRewardListResponse.empty();
 
         List<Habit> habits =
                 habitRepository.findAllByUserIdsAndStatusOptional(targetUserIds, searchStatuses);
@@ -227,7 +228,7 @@ public class HabitService {
     }
 
     @Transactional
-    public void retryFailedHabit(Long userId, Long habitId) {
+    public void retryFailedHabit(Long userId, Long habitId, HabitRetryRequest request) {
         Habit habit =
                 habitRepository
                         .findByIdAndUserIdAndStatus(habitId, userId, RewardStatus.FAIL)
@@ -238,7 +239,7 @@ public class HabitService {
                         .findById(userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        habit.retry(user);
+        habit.retry(user, request);
     }
 
     @Transactional
@@ -345,7 +346,11 @@ public class HabitService {
         }
 
         if (status == RewardStatus.ALL) {
-            return List.of(RewardStatus.REWARD_CHECKING, RewardStatus.IN_PROGRESS, RewardStatus.REWARD_WAITING, RewardStatus.COMPLETE);
+            return List.of(
+                    RewardStatus.REWARD_CHECKING,
+                    RewardStatus.IN_PROGRESS,
+                    RewardStatus.REWARD_WAITING,
+                    RewardStatus.COMPLETE);
         }
 
         if (userType == UserType.CHILD && status == RewardStatus.IN_PROGRESS) {

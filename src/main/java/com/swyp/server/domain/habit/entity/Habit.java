@@ -1,5 +1,6 @@
 package com.swyp.server.domain.habit.entity;
 
+import com.swyp.server.domain.habit.dto.HabitRetryRequest;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.global.SoftDeletableEntity;
@@ -89,7 +90,9 @@ public class Habit extends SoftDeletableEntity {
         this.status = rewardStatus;
     }
 
-    public void retry(User user) {
+    public void retry(User user, HabitRetryRequest request) {
+        this.duration = request.duration();
+        this.reward = request.reward();
         this.status =
                 user.getUserType() == UserType.CHILD
                         ? RewardStatus.REWARD_CHECKING

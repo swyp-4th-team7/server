@@ -72,7 +72,7 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
 
     @Modifying(clearAutomatically = true)
     @Query(
-            "UPDATE Habit h SET h.status = 'FAIL' "
+            "UPDATE Habit h SET h.status = 'FAIL', h.isCompleted = false "
                     + " WHERE h.failCount > 1 "
                     + " AND h.status IN ('REWARD_CHECKING', 'IN_PROGRESS')"
                     + " AND h.duration NOT IN ('THREE_DAYS', 'SEVEN_DAYS')")
