@@ -10,6 +10,10 @@ import com.swyp.server.domain.user.entity.Role;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.domain.user.repository.UserRepository;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,11 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
 
 @SpringBootTest
 @Transactional
@@ -40,7 +39,7 @@ public class HabitRepositoryTest {
 
     @Test
     @DisplayName("status가 'FAIL'인 습관은 보상 조회 시 조회되지 않아야 한다.")
-    void getHabitRewards(){
+    void getHabitRewards() {
 
         User user =
                 User.builder()
@@ -95,17 +94,22 @@ public class HabitRepositoryTest {
 
         habitFailed.updateRewardStatus(RewardStatus.FAIL);
 
+        habitRepository.saveAll(
+                List.of(habitInProgress, habitRewardWaiting, habitCompleted, habitFailed));
 
-        habitRepository.saveAll(List.of(habitInProgress, habitRewardWaiting, habitCompleted, habitFailed));
-
-        HabitRewardListResponse habitRewardsStatusAll = habitService.getHabitRewards(user.getId(), RewardStatus.ALL);
-        HabitRewardListResponse habitRewardsFail = habitService.getHabitRewards(user.getId(), RewardStatus.FAIL);
+        HabitRewardListResponse habitRewardsStatusAll =
+                habitService.getHabitRewards(user.getId(), RewardStatus.ALL);
+        HabitRewardListResponse habitRewardsFail =
+                habitService.getHabitRewards(user.getId(), RewardStatus.FAIL);
 
         Assertions.assertThat(habitRewardsStatusAll.habitRewards())
                 .hasSize(3)
                 .extracting("status")
                 .doesNotContain(RewardStatus.FAIL)
-                .containsExactlyInAnyOrder(RewardStatus.IN_PROGRESS, RewardStatus.REWARD_WAITING, RewardStatus.COMPLETE);
+                .containsExactlyInAnyOrder(
+                        RewardStatus.IN_PROGRESS,
+                        RewardStatus.REWARD_WAITING,
+                        RewardStatus.COMPLETE);
 
         Assertions.assertThat(habitRewardsFail.habitRewards()).isEmpty();
     }
@@ -233,7 +237,8 @@ public class HabitRepositoryTest {
     }
 
     @Test
-    @DisplayName("매일 자정 보상 확인중, 진행중 상태이며 수행 기간이 '3일', '7일' 외 습관들은 실패 횟수가 2회 이상이면 실패 상태가 되어야 한다.")
+    @DisplayName(
+            "매일 자정 보상 확인중, 진행중 상태이며 수행 기간이 '3일', '7일' 외 습관들은 실패 횟수가 2회 이상이면 실패 상태가 되어야 하며 일일 성공 여부가 false가 되어야 한다.")
     void updateCumulativeFailureHabits() {
         User user =
                 User.builder()
@@ -281,8 +286,10 @@ public class HabitRepositoryTest {
 
         Assertions.assertThat(fourteenDaysOneFailedHabitInDB.getStatus())
                 .isNotEqualTo(RewardStatus.FAIL);
+
         Assertions.assertThat(fourteenDaysTwoFailedHabitInDB.getStatus())
                 .isEqualTo(RewardStatus.FAIL);
+        Assertions.assertThat(fourteenDaysTwoFailedHabitInDB.isCompleted()).isEqualTo(false);
     }
 
     @Test
