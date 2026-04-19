@@ -239,7 +239,7 @@ public class HabitService {
                         .findById(userId)
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        habit.retry(user, request);
+        habit.retry(user, request.duration(), request.reward());
     }
 
     @Transactional

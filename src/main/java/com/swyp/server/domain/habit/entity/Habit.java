@@ -92,14 +92,14 @@ public class Habit extends SoftDeletableEntity {
         this.status = rewardStatus;
     }
 
-    public void retry(User user, HabitRetryRequest request) {
+    public void retry(User user, HabitDuration duration, String reward) {
         if (user.getUserType() == UserType.CHILD) {
-            if (request.reward() == null || request.reward().isBlank())
+            if (reward == null || reward.isBlank())
                 throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
         }
 
-        this.duration = request.duration();
-        this.reward = request.reward();
+        this.duration = duration;
+        this.reward = reward;
         this.status =
                 user.getUserType() == UserType.CHILD
                         ? RewardStatus.REWARD_CHECKING
