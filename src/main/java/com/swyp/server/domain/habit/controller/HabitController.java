@@ -76,8 +76,10 @@ public class HabitController {
     @Operation(summary = "습관 재도전")
     @PatchMapping("/failed/{habitId}/status/in-progress")
     public ResponseEntity<ApiResponse<Void>> retryFailedHabits(
-            @AuthenticationPrincipal Long userId, @PathVariable Long habitId) {
-        habitService.retryFailedHabit(userId, habitId);
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long habitId,
+            @Valid @RequestBody HabitRetryRequest request) {
+        habitService.retryFailedHabit(userId, habitId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

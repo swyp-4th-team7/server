@@ -3,6 +3,8 @@ package com.swyp.server.domain.habit.entity;
 import com.swyp.server.domain.user.entity.User;
 import com.swyp.server.domain.user.entity.UserType;
 import com.swyp.server.global.SoftDeletableEntity;
+import com.swyp.server.global.exception.CustomException;
+import com.swyp.server.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -89,7 +91,14 @@ public class Habit extends SoftDeletableEntity {
         this.status = rewardStatus;
     }
 
-    public void retry(User user) {
+    public void retry(User user, HabitDuration duration, String reward) {
+        if (user.getUserType() == UserType.CHILD) {
+            if (reward == null || reward.isBlank())
+                throw new CustomException(ErrorCode.HABIT_REWARD_REQUIRED);
+        }
+
+        this.duration = duration;
+        this.reward = reward;
         this.status =
                 user.getUserType() == UserType.CHILD
                         ? RewardStatus.REWARD_CHECKING
